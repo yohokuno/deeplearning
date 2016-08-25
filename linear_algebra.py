@@ -12,12 +12,22 @@ def add(A, B):
 
 
 def multiply(A, B):
-    I = len(A)
-    J = len(B[0])
-    K = len(A[0])
-    return [[sum(A[i][k] * B[k][j] for k in range(K)) for j in range(J)] for i in range(I)]
+    if type(A) is list:
+        I = len(A)
+        J = len(B[0])
+        K = len(A[0])
+        return [[sum(A[i][k] * B[k][j] for k in range(K)) for j in range(J)] for i in range(I)]
+    elif type(A) in [int, float]:
+        row = len(B)
+        column = len(B[0])
+        return [[A*B[i][j] for j in range(column)] for i in range(row)]
 
 
 def identity(size):
     return [[1 if i == j else 0 for j in range(size)] for i in range(size)]
 
+
+def inverse(A):
+    # 2x2 matrix only
+    determinant = A[0][0] * A[1][1] - A[0][1] * A[1][0]
+    return multiply(1./determinant, [[A[1][1], -A[0][1]], [-A[1][0], A[0][0]]])

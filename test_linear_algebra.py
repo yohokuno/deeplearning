@@ -23,8 +23,18 @@ class TestLinearAlgebra(TestCase):
         expected = [[3, 3], [7, 7]]
         self.assertEqual(actual, expected)
 
+        actual = multiply(2, A)
+        expected = [[2, 4], [6, 8]]
+        self.assertEqual(actual, expected)
+
     def test_identity(self):
         A = [[1, 2], [3, 4]]
         I = identity(2)
         self.assertEqual(multiply(A, I), A)
         self.assertEqual(multiply(I, A), A)
+
+    def test_inverse(self):
+        A = [[1, 2], [3, 4]]
+        A_inverse = inverse(A)
+        self.assertEqual(multiply(A, A_inverse), identity(2))
+        self.assertEqual(multiply(A_inverse, A), identity(2))
