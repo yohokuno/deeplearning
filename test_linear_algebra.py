@@ -27,6 +27,10 @@ class TestLinearAlgebra(TestCase):
         expected = [[2, 4], [6, 8]]
         self.assertEqual(actual, expected)
 
+        actual = multiply([1, 2], A)
+        expected = [7, 10]
+        self.assertEqual(actual, expected)
+
     def test_identity(self):
         A = [[1, 2], [3, 4]]
         I = identity(2)
@@ -50,4 +54,3 @@ class TestLinearAlgebra(TestCase):
         actual = diagonal(x)
         expected = [[1, 0], [0, 2]]
         self.assertEqual(actual, expected)
-        
