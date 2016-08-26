@@ -2,32 +2,56 @@ import math
 
 
 def transpose(A):
+    assert(is_matrix(A))
     row = len(A)
     column = len(A[0])
     return [[A[j][i] for j in range(column)] for i in range(row)]
 
 
 def add(A, B):
+    assert(len(A) == len(B))
+    assert(all(len(A[i]) == len(B[i]) for i in range(len(A))))
     row = len(A)
     column = len(A[0])
     return [[A[i][j] + B[j][i] for j in range(column)] for i in range(row)]
 
 
+def is_scalar(x):
+    return type(x) in [int, float]
+
+
+def is_vector(x):
+    return type(x) is list and \
+           all(is_scalar(x[i]) for i in range(len(x)))
+
+
+def is_matrix(x):
+    return type(x) is list and  \
+           all(type(x[i]) is list for i in range(len(x))) and \
+           all(len(x[i]) == len(x[0]) for i in range(len(x)))
+
+
 def multiply(A, B):
-    if type(A) in [int, float]:
-        row = len(B)
-        column = len(B[0])
-        return [[A*B[i][j] for j in range(column)] for i in range(row)]
-    elif type(A) is list:
-        if type(A[0]) in [int, float]:
-            I = len(A)
-            J = len(B[0])
-            return [sum(A[i] * B[i][j] for i in range(I)) for j in range(J)]
-        elif type(A[0]) is list:
-            I = len(A)
-            J = len(B[0])
-            K = len(A[0])
-            return [[sum(A[i][k] * B[k][j] for k in range(K)) for j in range(J)] for i in range(I)]
+    if is_scalar(A) and is_vector(B):
+        return [A * B[i] for i in range(len(B))]
+    if is_scalar(A) and is_matrix(B):
+        I = len(B)
+        J = len(B[0])
+        return [[A*B[i][j] for j in range(J)] for i in range(I)]
+    elif is_vector(A) and is_matrix(B):
+        I = len(A)
+        J = len(B[0])
+        return [sum(A[i] * B[i][j] for i in range(I)) for j in range(J)]
+    elif is_matrix(A) and is_vector(B):
+        I = len(A)
+        J = len(A[0])
+        return [sum(A[i][j] * B[j] for j in range(J)) for i in range(I)]
+    elif is_matrix(A) and is_matrix(B):
+        I = len(A)
+        J = len(B[0])
+        K = len(A[0])
+        return [[sum(A[i][k] * B[k][j] for k in range(K)) for j in range(J)] for i in range(I)]
+    raise Exception('No match!')
 
 
 def identity(size):

@@ -31,6 +31,10 @@ class TestLinearAlgebra(TestCase):
         expected = [7, 10]
         self.assertEqual(actual, expected)
 
+        actual = multiply(A, [1, 2])
+        expected = [5, 11]
+        self.assertEqual(actual, expected)
+
     def test_identity(self):
         A = [[1, 2], [3, 4]]
         I = identity(2)
@@ -54,3 +58,10 @@ class TestLinearAlgebra(TestCase):
         actual = diagonal(x)
         expected = [[1, 0], [0, 2]]
         self.assertEqual(actual, expected)
+
+    def test_eigen_composition(self):
+        V = [[1, 1], [1, -1]]
+        l = [1, 2]
+        A = eigen_composition(V, l)
+        self.assertEqual(multiply(A, [1, 1]), [1, 1])
+        self.assertEqual(multiply(A, [1, -1]), multiply(2, [1, -1]))
