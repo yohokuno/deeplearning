@@ -38,3 +38,16 @@ class TestLinearAlgebra(TestCase):
         A_inverse = inverse(A)
         self.assertEqual(multiply(A, A_inverse), identity(2))
         self.assertEqual(multiply(A_inverse, A), identity(2))
+
+    def test_norm(self):
+        x = [3, 4]
+        actual = norm(x)
+        expected = 5
+        self.assertEqual(actual, expected)
+
+    def test_diagonal(self):
+        x = [1, 2]
+        actual = diagonal(x)
+        expected = [[1, 0], [0, 2]]
+        self.assertEqual(actual, expected)
+        

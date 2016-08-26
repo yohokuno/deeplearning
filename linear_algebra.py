@@ -1,3 +1,5 @@
+import math
+
 
 def transpose(A):
     row = len(A)
@@ -31,3 +33,11 @@ def inverse(A):
     # 2x2 matrix only
     determinant = A[0][0] * A[1][1] - A[0][1] * A[1][0]
     return multiply(1./determinant, [[A[1][1], -A[0][1]], [-A[1][0], A[0][0]]])
+
+
+def norm(x):
+    return math.sqrt(sum(x[i] ** 2 for i in range(len(x))))
+
+
+def diagonal(x):
+    return [[x[i] if i == j else 0 for j in range(len(x))] for i in range(len(x))]
