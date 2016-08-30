@@ -70,6 +70,17 @@ class TestLinearAlgebra(TestCase):
         A = [[0., 1.], [-2., -3.]]
         l, V = eigen_decomposition(A)
         self.assertEqual(l, [-1., -2.])
+
         v1, v2 = transpose(V)
-        self.assertAlmostEqual(multiply(A, v1), multiply(l[0], v1), places=1)
-#        self.assertEqual(A, eigen_composition(V, l))
+
+        for i in range(2):
+            self.assertAlmostEqual(multiply(A, v1)[i], multiply(l[0], v1)[i])
+            self.assertAlmostEqual(multiply(A, v2)[i], multiply(l[1], v2)[i])
+
+        for i in range(2):
+            for j in range(2):
+                self.assertAlmostEqual(multiply(A, V)[i][j], multiply(V, diagonal(l))[i][j])
+
+        for i in range(2):
+            for j in range(2):
+                self.assertAlmostEqual(A[i][j], eigen_composition(V, l)[i][j])
