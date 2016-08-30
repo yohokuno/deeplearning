@@ -74,3 +74,17 @@ def diagonal(x):
 
 def eigen_composition(V, l):
     return multiply(multiply(V, diagonal(l)), inverse(V))
+
+
+def normalize(x):
+    return [x[i]/norm(x) for i in range(len(x))]
+
+
+def eigen_decomposition(A):
+    # 2x2 matrix only
+    l1 = (A[0][0] + A[1][1] + math.sqrt((A[0][0] - A[1][1])**2. + 4. * A[0][1] * A[1][0])) / 2.
+    l2 = (A[0][0] + A[1][1] - math.sqrt((A[0][0] - A[1][1])**2. + 4. * A[0][1] * A[1][0])) / 2.
+    v1 = [A[0][1], l1 - A[0][0]]
+    v2 = [A[0][1], l2 - A[0][0]]
+    v = transpose([normalize(v1), normalize(v2)])
+    return [[l1, l2], v]

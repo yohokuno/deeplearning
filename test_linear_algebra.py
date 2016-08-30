@@ -65,3 +65,11 @@ class TestLinearAlgebra(TestCase):
         A = eigen_composition(V, l)
         self.assertEqual(multiply(A, [1, 1]), [1, 1])
         self.assertEqual(multiply(A, [1, -1]), multiply(2, [1, -1]))
+
+    def test_eigen_decomposition(self):
+        A = [[0., 1.], [-2., -3.]]
+        l, V = eigen_decomposition(A)
+        self.assertEqual(l, [-1., -2.])
+        v1, v2 = transpose(V)
+        self.assertAlmostEqual(multiply(A, v1), multiply(l[0], v1), places=1)
+#        self.assertEqual(A, eigen_composition(V, l))
