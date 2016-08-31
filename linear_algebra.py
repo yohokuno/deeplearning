@@ -2,10 +2,7 @@ import math
 
 
 def transpose(A):
-    assert(is_matrix(A))
-    row = len(A)
-    column = len(A[0])
-    return [[A[j][i] for j in range(column)] for i in range(row)]
+    return [[A[i][j] for i in range(len(A))] for j in range(len(A[0]))]
 
 
 def add(A, B):
@@ -34,7 +31,10 @@ def is_matrix(x):
 def multiply(A, B):
     if is_scalar(A) and is_vector(B):
         return [A * B[i] for i in range(len(B))]
-    if is_scalar(A) and is_matrix(B):
+    elif is_vector(A) and is_vector(B):
+        # Vector product, not element-wise product
+        return sum([A[i] * B[i] for i in range(len(A))])
+    elif is_scalar(A) and is_matrix(B):
         I = len(B)
         J = len(B[0])
         return [[A*B[i][j] for j in range(J)] for i in range(I)]
@@ -86,5 +86,10 @@ def eigen_decomposition(A):
     l2 = (A[0][0] + A[1][1] - math.sqrt((A[0][0] - A[1][1])**2. + 4. * A[0][1] * A[1][0])) / 2.
     v1 = [A[0][1], l1 - A[0][0]]
     v2 = [A[0][1], l2 - A[0][0]]
-    v = transpose([normalize(v1), normalize(v2)])
-    return [[l1, l2], v]
+    V = transpose([normalize(v1), normalize(v2)])
+    return [[l1, l2], V]
+
+
+def principal_component_analysis(X):
+    # X: n * 2 matrix (n: number of data points)
+    return eigen_decomposition(multiply(transpose(X), X))

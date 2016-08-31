@@ -84,3 +84,16 @@ class TestLinearAlgebra(TestCase):
         for i in range(2):
             for j in range(2):
                 self.assertAlmostEqual(A[i][j], eigen_composition(V, l)[i][j])
+
+    def test_principal_component_analysis(self):
+        X = [[0., 0.],
+             [1., 0.],
+             [0., 1.],
+             [1., 1.]]
+        l, D = principal_component_analysis(X)
+        C = multiply(transpose(D), transpose(X))
+        R = transpose(multiply(D, C))
+
+        for i in range(len(X)):
+            for j in range(len(X[0])):
+                self.assertAlmostEqual(X[i][j], R[i][j])
