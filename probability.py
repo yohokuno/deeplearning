@@ -17,8 +17,9 @@ def marginalize(P, axis=1):
 
 
 def condition(P):
-    # condition P(i, j) on j to P(i | j)
-    return [[P[i][j] / sum(P[i][k] for k in range(len(P[0]))) for j in range(len(P[0]))] for i in range(len(P))]
+    # condition P(x, y) on y to P(x | y)
+    P_x = marginalize(P, axis=1)
+    return [[P[i][j] / P_x[i] for j in range(len(P[0]))] for i in range(len(P))]
 
 
 def is_independent(P):
