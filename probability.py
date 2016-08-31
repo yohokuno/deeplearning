@@ -1,5 +1,9 @@
 def is_probability(P):
-    return sum(P) == 1.0
+    return sum(P) == 1.0 and all(p >= 0.0 for p in P) and all(p <= 1.0 for p in P)
+
+
+def uniform(k):
+    return [1.0 / k for _ in range(k)]
 
 
 def marginalize(P):

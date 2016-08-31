@@ -7,7 +7,11 @@ class TestProbability(TestCase):
         self.assertTrue(is_probability([1.0, 0.0]))
         self.assertTrue(is_probability([0.5, 0.5]))
         self.assertFalse(is_probability([0.0, 0.0]))
+        self.assertFalse(is_probability([-1.0, 2.0]))
 
+    def test_uniform(self):
+        self.assertEqual(uniform(2), [0.5, 0.5])
+        
     def test_marginalize(self):
         self.assertEqual(marginalize([[0.1, 0.4], [0.3, 0.2]]), [0.5, 0.5])
 
