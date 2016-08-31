@@ -23,3 +23,6 @@ class TestProbability(TestCase):
         self.assertTrue(is_independent([[0.1, 0.4], [0.1, 0.4]]))
         self.assertTrue(is_independent([[0.2, 0.2], [0.3, 0.3]]))
         self.assertFalse(is_independent([[0.1, 0.4], [0.4, 0.1]]))
+
+    def test_expectation(self):
+        self.assertEqual(expectation([0.1, 0.9], lambda x: x), 0.9)

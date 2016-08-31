@@ -25,3 +25,7 @@ def is_independent(P):
     P_x = marginalize(P, axis=1)
     P_y = marginalize(P, axis=0)
     return all(P[i][j] == P_x[i] * P_y[j] for i in range(len(P_x)) for j in range(len(P_y)))
+
+
+def expectation(P, f):
+    return sum(P[x] * f(x) for x in range(len(P)))
