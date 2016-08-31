@@ -9,9 +9,6 @@ class TestProbability(TestCase):
         self.assertFalse(is_probability([0.0, 0.0]))
         self.assertFalse(is_probability([-1.0, 2.0]))
 
-    def test_uniform(self):
-        self.assertEqual(uniform(2), [0.5, 0.5])
-
     def test_marginalize(self):
         self.assertEqual(marginalize([[0.1, 0.4], [0.3, 0.2]], axis=1), [0.5, 0.5])
         self.assertEqual(marginalize([[0.1, 0.4], [0.3, 0.2]], axis=0), [0.4, 0.6000000000000001])
@@ -26,3 +23,21 @@ class TestProbability(TestCase):
 
     def test_expectation(self):
         self.assertEqual(expectation([0.1, 0.9], lambda x: x), 0.9)
+
+    def test_uniform(self):
+        self.assertEqual(uniform(2)(0), 0.5)
+
+    def test_bernoulli(self):
+        self.assertEqual(bernoulli(0.1)(0), 0.9)
+
+    def test_multinoulli(self):
+        self.assertEqual(multinoulli([0.1, 0.9])(1), 0.9)
+
+    def test_gaussian(self):
+        N = gaussian(0.0, 1.0)
+        self.assertGreater(N(0.0), N(0.1))
+        self.assertGreater(N(0.0), N(-0.1))
+        self.assertEqual(N(0.1), N(-0.1))
+
+    def test_mixture(self):
+        pass

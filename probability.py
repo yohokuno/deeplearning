@@ -1,9 +1,8 @@
+import math
+
+
 def is_probability(P):
     return sum(P) == 1.0 and all(p >= 0.0 for p in P) and all(p <= 1.0 for p in P)
-
-
-def uniform(k):
-    return [1.0 / k for _ in range(k)]
 
 
 def marginalize(P, axis=1):
@@ -30,3 +29,24 @@ def is_independent(P):
 
 def expectation(P, f):
     return sum(P[x] * f(x) for x in range(len(P)))
+
+
+def uniform(k):
+    return lambda x: 1.0 / k
+
+
+def bernoulli(phi):
+    return lambda x: phi ** x * (1.0 - phi) ** (1 - x)
+
+
+def multinoulli(p):
+    return lambda x: p[x]
+
+
+def gaussian(mu, sigma):
+    beta = 1.0 / sigma ** 2
+    return lambda x: math.sqrt(beta / (2.0 * math.pi)) * math.exp(-1.0 / 2.0 * beta * (x - mu) ** 2)
+
+
+def mixture(distributions, weights):
+    return lambda x: sum(weights[i] * distributions[i](x) for i in range(len(weights)))
