@@ -40,4 +40,9 @@ class TestProbability(TestCase):
         self.assertEqual(N(0.1), N(-0.1))
 
     def test_mixture(self):
-        pass
+        G1 = gaussian(1.0, 1.0)
+        G2 = gaussian(-1.0, 1.0)
+        M = mixture([G1, G2], [0.6, 0.4])
+        self.assertGreater(M(1.0), M(-1.0))
+        self.assertGreater(M(1.0), M(0.0))
+        self.assertLess(M(-10.0), M(0.0))
