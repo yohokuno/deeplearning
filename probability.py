@@ -54,4 +54,12 @@ def mixture(distributions, weights):
 
 def entropy(P):
     # support only multinoulli distribution
-    return -sum(P[x] * math.log(P[x]) for x in range(len(P)))
+    return -sum(P[x] * math.log(P[x]) if P[x] != 0.0 else 0.0 for x in range(len(P)))
+
+
+def kl_divergence(P, Q):
+    return sum(P[x] * math.log(P[x] / Q[x]) if P[x] != 0.0 else 0.0 for x in range(len(P)))
+
+
+def cross_entropy(P, Q):
+    return -sum(P[x] * math.log(Q[x]) if P[x] != 0.0 or Q[x] != 0.0 else 0.0 for x in range(len(P)))

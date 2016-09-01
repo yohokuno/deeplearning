@@ -48,5 +48,17 @@ class TestProbability(TestCase):
         self.assertLess(M(-10.0), M(0.0))
 
     def test_entropy(self):
+        self.assertEqual(entropy([1.0, 0.0]), 0.0)
         self.assertEqual(entropy([0.5, 0.5]), -math.log(0.5))
         self.assertLess(entropy([0.1, 0.9]), entropy([0.5, 0.5]))
+        self.assertGreater(entropy([0.1, 0.9]), 0.0)
+
+    def test_kl_divergence(self):
+        self.assertEqual(kl_divergence([1.0, 0.0], [1.0, 0.0]), 0.0)
+        self.assertLess(kl_divergence([1.0, 0.0], [0.9, 0.1]), kl_divergence([1.0, 0.0], [0.1, 0.9]))
+        self.assertGreater(kl_divergence([1.0, 0.0], [0.9, 0.1]), 0.0)
+
+    def test_cross_entropy(self):
+        self.assertEqual(cross_entropy([1.0, 0.0], [1.0, 0.0]), 0.0)
+        self.assertGreater(cross_entropy([1.0, 0.0], [0.9, 0.1]), 0.0)
+        self.assertLess(cross_entropy([1.0, 0.0], [0.9, 0.1]), cross_entropy([1.0, 0.0], [0.5, 0.5]))
