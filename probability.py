@@ -50,3 +50,8 @@ def gaussian(mu, sigma):
 
 def mixture(distributions, weights):
     return lambda x: sum(weights[i] * distributions[i](x) for i in range(len(weights)))
+
+
+def entropy(P):
+    # support only multinoulli distribution
+    return -sum(P[x] * math.log(P[x]) for x in range(len(P)))

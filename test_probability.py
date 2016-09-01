@@ -46,3 +46,7 @@ class TestProbability(TestCase):
         self.assertGreater(M(1.0), M(-1.0))
         self.assertGreater(M(1.0), M(0.0))
         self.assertLess(M(-10.0), M(0.0))
+
+    def test_entropy(self):
+        self.assertEqual(entropy([0.5, 0.5]), -math.log(0.5))
+        self.assertLess(entropy([0.1, 0.9]), entropy([0.5, 0.5]))
