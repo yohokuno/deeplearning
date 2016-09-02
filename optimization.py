@@ -15,20 +15,17 @@ def run_iterations(iterator, max_iterations, abs_tol=1e-20):
     return i, x, cost
 
 
-def gradient_descent_scalar(cost_function, derivative_function, initial_value, learning_rate):
+def gradient_descent_scalar(cost, derivative, initial_value, step_size):
     x = initial_value
 
     while True:
-        derivative = derivative_function(x)
-        x -= learning_rate * derivative
-        yield x, cost_function(x)
+        x -= step_size * derivative(x)
+        yield x, cost(x)
 
 
-def newtons_method_scalar(cost_function, derivative_function, second_derivative_function, initial_value, learning_rate):
+def newtons_method_scalar(cost, derivative, second_derivative, initial_value, step_size):
     x = initial_value
 
     while True:
-        derivative = derivative_function(x)
-        second_derivative = second_derivative_function(x)
-        x -= learning_rate * derivative / second_derivative
-        yield x, cost_function(x)
+        x -= step_size * derivative(x) / second_derivative(x)
+        yield x, cost(x)
