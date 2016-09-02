@@ -1,5 +1,6 @@
 import itertools
 import math
+import numpy as np
 
 
 def run_iterations(iterator, max_iterations, abs_tol=1e-20):
@@ -15,17 +16,23 @@ def run_iterations(iterator, max_iterations, abs_tol=1e-20):
     return i, x, cost
 
 
-def gradient_descent_scalar(cost, derivative, initial_value, step_size):
+def gradient_descent(cost, gradient, initial_value, step_size):
     x = initial_value
 
     while True:
-        x -= step_size * derivative(x)
+        x -= step_size * gradient(x)
         yield x, cost(x)
 
 
-def newtons_method_scalar(cost, derivative, second_derivative, initial_value, step_size):
+def newtons_method(cost, gradient, hessian, initial_value, step_size):
     x = initial_value
 
     while True:
-        x -= step_size * derivative(x) / second_derivative(x)
+        if np.isscalar(x):
+            x -= step_size * gradient(x) / hessian(x)
+        else:
+            H = hessian(x)
+            x -= step_size * np.linalg.inv(H) @ gradient(x)
+            # More efficient implementation
+            # x = np.linalg.solve(H, H @ x - step_size * gradient(x))
         yield x, cost(x)
