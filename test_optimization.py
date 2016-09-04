@@ -56,3 +56,10 @@ class TestOptimization(TestCase):
         self.assertAlmostEqual(x[0], 0.0)
         self.assertAlmostEqual(x[1], 0.0)
         self.assertAlmostEqual(cost, 0.0)
+
+    def test_linear_least_square(self):
+        A = np.array([[0.1, 0.9], [0.2, 0.8]])
+        b = np.array([0.3, 0.7])
+        actual = linear_least_square(A, b)
+        expected = np.linalg.solve(A, b)
+        np.testing.assert_almost_equal(actual, expected)

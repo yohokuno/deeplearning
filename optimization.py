@@ -36,3 +36,14 @@ def newtons_method(cost, gradient, hessian, initial_value, step_size):
             # More efficient implementation
             # x = np.linalg.solve(H, H @ x - step_size * gradient(x))
         yield x, cost(x)
+
+
+def linear_least_square(A, b):
+    def cost(x):
+        return np.linalg.norm(A @ x - b) ** 2 / 2.0
+
+    def gradient(x):
+        return A.T @ (A @ x - b)
+
+    i, x, cost = run_iterations(gradient_descent(cost, gradient, np.zeros(A.shape[1]), 1.0), 10000)
+    return x
