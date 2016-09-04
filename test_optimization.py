@@ -69,3 +69,9 @@ class TestOptimization(TestCase):
         b = np.array([0.3, 0.7])
         x = constrained_linear_least_square(A, b)
         np.testing.assert_almost_equal(np.linalg.norm(x), 1.0)
+        cost = np.linalg.norm(A @ x - b) ** 2 / 2.0
+        cost0 = np.linalg.norm(A @ np.zeros(2) - b) ** 2 / 2.0
+        self.assertLess(cost, cost0)
+
+        cost1 = np.linalg.norm(A @ np.linalg.solve(A, b) - b) ** 2 / 2.0
+        self.assertGreater(cost, cost1)
