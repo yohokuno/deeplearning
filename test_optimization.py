@@ -63,3 +63,9 @@ class TestOptimization(TestCase):
         actual = linear_least_square(A, b)
         expected = np.linalg.solve(A, b)
         np.testing.assert_almost_equal(actual, expected)
+
+    def test_constrained_linear_least_square(self):
+        A = np.array([[0.1, 0.9], [0.2, 0.8]])
+        b = np.array([0.3, 0.7])
+        x = constrained_linear_least_square(A, b)
+        np.testing.assert_almost_equal(np.linalg.norm(x), 1.0)

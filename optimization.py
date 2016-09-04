@@ -47,3 +47,18 @@ def linear_least_square(A, b):
 
     i, x, cost = run_iterations(gradient_descent(cost, gradient, np.zeros(A.shape[1]), 1.0), 10000)
     return x
+
+
+def constrained_linear_least_square(A, b):
+    x = np.linalg.solve(A, b)
+    if x.T @ x <= 1.0:
+        return x
+
+    l = 0.0
+    step_size = 0.1
+
+    for i in range(10000):
+        l += step_size * (x.T @ x - 1.0)
+        x = np.linalg.inv(A.T @ A + 2.0 * l * np.identity(A.shape[0])) @ A.T @ b
+
+    return x
