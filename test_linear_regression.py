@@ -44,3 +44,12 @@ class TestLinearRegression(TestCase):
         linear_regression = LinearRegression(X_train, y_train, False, 2)
         self.assertAlmostEqual(linear_regression.error(X_train, y_train), 0.0)
         self.assertAlmostEqual(linear_regression.error(X_test, y_test), 0.0)
+
+    def test_hyper_linear_regression(self):
+        X_train = np.array([[1.0], [2.0], [3.0]])
+        y_train = np.array([1.0, 4.0, 9.0])
+        X_test = np.array([[0.0], [1.5], [4.0]])
+        y_test = np.array([0.0, 2.25, 16.0])
+        hyper_linear_regression = HyperLinearRegression(X_train, y_train)
+        self.assertAlmostEqual(hyper_linear_regression.error(X_train, y_train), 0.0)
+        self.assertAlmostEqual(hyper_linear_regression.error(X_test, y_test), 0.0)
