@@ -21,7 +21,7 @@ def gradient_descent(cost, gradient, initial_value, step_size):
 
     while True:
         x -= step_size * gradient(x)
-        yield x, cost(x)
+        yield np.copy(x), cost(x)
 
 
 def newtons_method(cost, gradient, hessian, initial_value, step_size):
