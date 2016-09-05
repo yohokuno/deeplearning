@@ -16,9 +16,5 @@ class LinearRegression:
         return np.average((self.predict(X) - y) ** 2)
 
     def preprocess(self, X):
-        X = X ** np.arange(1, self.degree + 1)
-
-        if self.bias:
-            X = np.hstack((X, np.ones((X.shape[0], 1))))
-        return X
+        return X ** np.arange(0 if self.bias else 1, self.degree + 1)
 
