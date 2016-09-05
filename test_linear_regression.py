@@ -12,11 +12,6 @@ class TestLinearRegression(TestCase):
         np.testing.assert_almost_equal(linear_regression.predict(X), y)
         self.assertAlmostEqual(linear_regression.error(X, y), 0.0)
 
-        X = np.array([[-1.0], [1.0]])
-        y = np.array([0.5, 2.5])
-        linear_regression = LinearRegression(X, y, False)
-        self.assertGreater(linear_regression.error(X, y), 0.0)
-
         # With bias
         X = np.array([[-1.0], [1.0]])
         y = np.array([0.5, 2.5])
@@ -30,3 +25,22 @@ class TestLinearRegression(TestCase):
         linear_regression = LinearRegression(X, y, True, 2)
         np.testing.assert_almost_equal(linear_regression.predict(X), y)
         self.assertAlmostEqual(linear_regression.error(X, y), 0.0)
+
+        # Overfitting
+        X_train = np.array([[1.0], [2.0], [3.0]])
+        y_train = np.array([1.0, 4.0, 9.0])
+        X_test = np.array([[0.0], [1.5], [4.0]])
+        y_test = np.array([0.0, 2.25, 16.0])
+        linear_regression = LinearRegression(X_train, y_train, False, 9)
+        self.assertAlmostEqual(linear_regression.error(X_train, y_train), 0.0)
+        self.assertGreater(linear_regression.error(X_test, y_test), 0.0)
+
+        # Underfitting
+        linear_regression = LinearRegression(X_train, y_train, False, 1)
+        self.assertGreater(linear_regression.error(X_train, y_train), 0.0)
+        self.assertGreater(linear_regression.error(X_test, y_test), 0.0)
+
+        # Best capacity
+        linear_regression = LinearRegression(X_train, y_train, False, 2)
+        self.assertAlmostEqual(linear_regression.error(X_train, y_train), 0.0)
+        self.assertAlmostEqual(linear_regression.error(X_test, y_test), 0.0)
