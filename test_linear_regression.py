@@ -23,3 +23,10 @@ class TestLinearRegression(TestCase):
         linear_regression = LinearRegression(X, y, True)
         np.testing.assert_almost_equal(linear_regression.predict(X), y)
         self.assertAlmostEqual(linear_regression.error(X, y), 0.0)
+
+        # With polynomial
+        X = np.array([[1.0], [2.0], [3.0]])
+        y = np.array([1.0, 4.0, 9.0])
+        linear_regression = LinearRegression(X, y, True, 2)
+        np.testing.assert_almost_equal(linear_regression.predict(X), y)
+        self.assertAlmostEqual(linear_regression.error(X, y), 0.0)
