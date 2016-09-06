@@ -66,20 +66,21 @@ class LogisticRegression:
 
 
 class SupportVectorMachine:
-    def __init__(self, X, y):
+    def __init__(self, X, y, kernel=lambda x, y: np.exp(np.linalg.norm(x - y)**2)):
         def cost(alpha):
             result = 0.0
             for j in range(X.shape[0]):
-                prediction = sum(alpha[i] * X[j] @ X[i] for i in range(X.shape[0]))
+                prediction = sum(alpha[i] * kernel(X[j], X[i]) for i in range(X.shape[0]))
                 result += (prediction - y[j]) ** 2
             return result
 
+        self.kernel = kernel
         self.X = X
         self.alpha = minimize(cost, np.zeros(X.shape[0])).x
 
     def predict(self, X):
         result = []
         for i in range(X.shape[0]):
-            prediction = sum(self.alpha[j] * X[i] @ self.X[j] for j in range(self.X.shape[0]))
+            prediction = sum(self.alpha[j] * self.kernel(X[i], self.X[j]) for j in range(self.X.shape[0]))
             result.append(prediction)
         return np.array(result)
