@@ -1,6 +1,4 @@
 from unittest import TestCase
-
-from classification import LogisticRegression, SupportVectorMachine
 from regression import *
 
 
