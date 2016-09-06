@@ -51,6 +51,7 @@ class TestMachineLearning(TestCase):
         self.assertLess(linear_regression.error(X_test, y_test), 1.0)
 
     def test_hyper_linear_regression(self):
+        # Tuning hyper parameter with test data
         X_train = np.array([[1.0], [2.0], [3.0]])
         y_train = np.array([1.0, 4.0, 9.0])
         X_test = np.array([[0.0], [1.5], [4.0]])
@@ -61,6 +62,7 @@ class TestMachineLearning(TestCase):
         self.assertAlmostEqual(hyper_linear_regression.error(X_test, y_test), 0.0)
 
     def test_nearest_neighbor(self):
+        # Solving regression problem with nearest neighbor approach
         X = np.array([[-1.0], [1.0]])
         y = np.array([-1.5, 1.5])
         nearest_neighbor = NearestNeighbor(X, y)
@@ -77,6 +79,7 @@ class TestMachineLearning(TestCase):
         self.assertGreater(nearest_neighbor.error(X_test, y_test), 0.0)
 
     def test_logistic_regression(self):
+        # Binary classification with logistic regression
         X = np.array([[1.0, 1.0],
                       [-1.0, -1.0]])
         y = np.array([1, 0])
