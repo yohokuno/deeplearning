@@ -1,9 +1,10 @@
 from unittest import TestCase
-from machine_learning import *
-import numpy as np
+
+from classification import LogisticRegression, SupportVectorMachine
+from regression import *
 
 
-class TestMachineLearning(TestCase):
+class TestRegression(TestCase):
     def test_train_linear_regression(self):
         # Without bias
         X = np.array([[-1.0], [1.0]])
@@ -77,25 +78,3 @@ class TestMachineLearning(TestCase):
         np.testing.assert_almost_equal(nearest_neighbor.predict(X_train), y_train)
         self.assertAlmostEqual(nearest_neighbor.error(X_train, y_train), 0.0)
         self.assertGreater(nearest_neighbor.error(X_test, y_test), 0.0)
-
-    def test_logistic_regression(self):
-        # Binary classification with logistic regression
-        X = np.array([[1.0, 1.0],
-                      [-1.0, -1.0]])
-        y = np.array([1, 0])
-
-        model = LogisticRegression(X, y)
-        prediction = model.predict(X)
-        np.testing.assert_almost_equal(prediction, y)
-
-    def test_support_vector_machine(self):
-        # Learning XOR with gaussian kernel SVM
-        X = np.array([[0.0, 0.0],
-                      [1.0, 0.0],
-                      [1.0, 1.0],
-                      [0.0, 1.0]])
-        y = np.array([1, -1, 1, -1])
-
-        model = SupportVectorMachine(X, y)
-        prediction = model.predict(X)
-        np.testing.assert_almost_equal(prediction, y, decimal=4)
