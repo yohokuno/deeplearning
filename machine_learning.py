@@ -35,18 +35,6 @@ class HyperLinearRegression:
         return self.model.error(X, y)
 
 
-class LogisticRegression:
-    def __init__(self, X, y):
-        def cost(theta):
-            p = expit(theta @ X.T)
-            return -np.sum(np.log(p ** y * (1.0 - p) ** (1 - y)))
-
-        self.theta = minimize(cost, np.zeros(X.shape[1])).x
-
-    def predict(self, X):
-        return self.theta @ X.T > 0.0
-
-
 class NearestNeighbor:
     def __init__(self, X, y):
         self.X = X
@@ -63,3 +51,35 @@ class NearestNeighbor:
 
     def error(self, X, y):
         return np.average((self.predict(X) - y) ** 2)
+
+
+class LogisticRegression:
+    def __init__(self, X, y):
+        def cost(theta):
+            p = expit(theta @ X.T)
+            return -np.sum(np.log(p ** y * (1.0 - p) ** (1 - y)))
+
+        self.theta = minimize(cost, np.zeros(X.shape[1])).x
+
+    def predict(self, X):
+        return self.theta @ X.T > 0.0
+
+
+class SupportVectorMachine:
+    def __init__(self, X, y):
+        def cost(alpha):
+            result = 0.0
+            for j in range(X.shape[0]):
+                prediction = sum(alpha[i] * X[j] @ X[i] for i in range(X.shape[0]))
+                result += (prediction - y[j]) ** 2
+            return result
+
+        self.X = X
+        self.alpha = minimize(cost, np.zeros(X.shape[0])).x
+
+    def predict(self, X):
+        result = []
+        for i in range(X.shape[0]):
+            prediction = sum(self.alpha[j] * X[i] @ self.X[j] for j in range(self.X.shape[0]))
+            result.append(prediction)
+        return np.array(result)

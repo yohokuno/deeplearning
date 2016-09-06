@@ -84,3 +84,12 @@ class TestMachineLearning(TestCase):
         model = LogisticRegression(X, y)
         prediction = model.predict(X)
         np.testing.assert_almost_equal(prediction, y)
+
+    def test_support_vector_machine(self):
+        X = np.array([[1.0, 1.0],
+                      [-1.0, -1.0]])
+        y = np.array([1, -1])
+
+        model = SupportVectorMachine(X, y)
+        prediction = model.predict(X)
+        np.testing.assert_almost_equal(prediction, y)
