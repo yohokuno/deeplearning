@@ -2,11 +2,11 @@ import numpy as np
 
 
 class LinearRegression:
-    def __init__(self, X, y, bias=False, degree=1):
+    def __init__(self, X, y, bias=False, degree=1, l=0.0):
         self.bias = bias
         self.degree = degree
         X = self.preprocess(X)
-        self.w = np.linalg.solve(X.T @ X, X.T @ y)
+        self.w = np.linalg.solve(X.T @ X + l * np.identity(X.shape[1]), X.T @ y)
 
     def predict(self, X):
         X = self.preprocess(X)
@@ -23,7 +23,7 @@ class HyperLinearRegression:
     def __init__(self, X, y, max_degree=100):
         for d in range(max_degree):
             self.model = LinearRegression(X, y, False, d)
-            if self.model.error(X, y) == 0.0:
+            if np.isclose(self.model.error(X, y), 0.0):
                 break
 
     def predict(self, X):
