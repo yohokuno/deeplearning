@@ -18,3 +18,8 @@ class TestBackPropagation(unittest.TestCase):
         functions = [multiply(0, 1), add(2, 3)]
         gradients = back_propagation(inputs, functions)
         self.assertEqual(gradients, [3, 2, 1, 1, 1])
+
+        inputs = [2]
+        functions = [identity(0), multiply(0, 1)]
+        gradients = back_propagation(inputs, functions)
+        self.assertEqual(gradients, [4, 2, 1])
