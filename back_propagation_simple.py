@@ -28,7 +28,7 @@ def add(i, j):
     return function, gradient, [i, j]
 
 
-def back_propagation(inputs, functions):
+def back_propagation_simple(inputs, functions):
     # An unit is tuple of unit value, local gradient and indices of children.
     units = [[input, [], []] for input in inputs]
 
