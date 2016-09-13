@@ -1,3 +1,7 @@
+import functools
+import operator
+
+
 class Unit:
     def __init__(self, *parents):
         self.parents = parents
@@ -23,13 +27,35 @@ class Unit:
 
 
 class Constant(Unit):
-    def get_gradient(self):
-        return []
+    def __init__(self, value=None):
+        self.value = value
+        super(Constant, self).__init__()
+
+    def evaluate(self):
+        return self.value
 
 
 class Sum(Unit):
     def get_gradient(self):
-        return self.parents
+        return [Constant(1) for _ in self.parents]
+
+    def evaluate(self):
+        return sum(parent.evaluate() for parent in self.parents)
+
+
+class Product(Unit):
+    def get_gradient(self):
+        if len(self.parents) == 1:
+            return [Constant(1.0)]
+        elif len(self.parents) == 2:
+            return self.parents[1], self.parents[0]
+        return [Product(*(self.parents[:i] + self.parents[i+1:])) for i in range(len(self.parents))]
+
+    def evaluate(self):
+        result = 1.0
+        for parent in self.parents:
+            result *= parent.evaluate()
+        return result
 
 
 def back_propagation(output, targets):
@@ -43,7 +69,6 @@ def back_propagation(output, targets):
 
 
 def build_grad(variable, output, grad_table):
-    print(variable, output, grad_table)
     if variable in grad_table:
         return grad_table[variable]
 
@@ -53,8 +78,10 @@ def build_grad(variable, output, grad_table):
         gradient = child.get_gradient()[i]
         gradients.append(gradient)
 
-    gradients = Sum(*gradients)
+    if len(gradients) == 1:
+        gradients = gradients[0]
+    else:
+        gradients = Sum(*gradients)
     grad_table[variable] = gradients
 #    insert_nodes(gradient, output)
-    print('grad_table', grad_table)
     return gradients
