@@ -45,9 +45,21 @@ class TestBackPropagation(TestCase):
         self.assertEqual(build_grad(variable).evaluate(), 0)
 
         x = Constant(4)
-        square = Product(x, x)
+        Sum(x, x)
+        self.assertEqual(build_grad(x).evaluate(), 2)
+
+        x = Constant(4)
+        Product(x, x)
         self.assertEqual(build_grad(x).evaluate(), 8)
+
+        x = Constant(4)
+        Sum(x, Product(x, x))
+        self.assertEqual(build_grad(x).evaluate(), 9)
 
         x = Constant(4)
         Product(Constant(3), Product(Constant(2), x))
         self.assertEqual(build_grad(x).evaluate(), 6)
+
+        x = Constant(4)
+        Product(x, Product(x, x))
+        self.assertEqual(build_grad(x).evaluate(), 3 * 16)
