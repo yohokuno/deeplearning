@@ -65,7 +65,12 @@ def build_grad(variable):
             if parent is variable:
                 # found gradient respect to parent
                 break
-        gradients.append(gradient)
+
+        if len(child.get_children()) == 0:
+            gradients.append(gradient)
+        else:
+            child_gradient = build_grad(child)
+            gradients.append(Product(child_gradient, gradient))
 
     if len(gradients) == 1:
         gradient = gradients[0]
