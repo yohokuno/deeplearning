@@ -1,7 +1,3 @@
-import functools
-import operator
-
-
 class Unit:
     def __init__(self, *parents):
         self.parents = parents
@@ -18,12 +14,6 @@ class Unit:
 
     def get_children(self):
         return self.children
-
-    def __eq__(self, other):
-        return type(self) is type(other) and self.parents == other.parents
-
-    def __hash__(self):
-        return self.parents.__hash__()
 
 
 class Constant(Unit):
@@ -68,20 +58,17 @@ def back_propagation(output, targets):
     return grad_table
 
 
-def build_grad(variable, output, grad_table):
-    if variable in grad_table:
-        return grad_table[variable]
-
+def build_grad(variable):
     gradients = []
-    for i, child in enumerate(variable.get_children()):
-        d = build_grad(child, output, grad_table)
-        gradient = child.get_gradient()[i]
+    for child in variable.get_children():
+        for parent, gradient in zip(child.get_parents(), child.get_gradient()):
+            if parent is variable:
+                # found gradient respect to parent
+                break
         gradients.append(gradient)
 
     if len(gradients) == 1:
-        gradients = gradients[0]
+        gradient = gradients[0]
     else:
-        gradients = Sum(*gradients)
-    grad_table[variable] = gradients
-#    insert_nodes(gradient, output)
-    return gradients
+        gradient = Sum(*gradients)
+    return gradient

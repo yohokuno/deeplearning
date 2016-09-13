@@ -41,11 +41,13 @@ class TestBackPropagation(TestCase):
         pass
 
     def test_build_grad(self):
-        x1 = Constant(2)
-        x2 = Constant(3)
-        output = Sum(x1, x2)
-        grad_table = dict()
-        build_grad(x1, output, grad_table)
-        build_grad(x2, output, grad_table)
-        self.assertEqual(grad_table[x1].evaluate(), 1)
-        self.assertEqual(grad_table[x2].evaluate(), 1)
+        variable = Constant(2)
+        self.assertEqual(build_grad(variable).evaluate(), 0)
+
+        x = Constant(4)
+        square = Product(x, x)
+        self.assertEqual(build_grad(x).evaluate(), 8)
+
+        x = Constant(4)
+        Product(Constant(3), Product(Constant(2), x))
+        self.assertEqual(build_grad(x).evaluate(), 6)
