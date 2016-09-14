@@ -26,6 +26,12 @@ class Unit:
     def __mul__(self, other):
         return Product(self, other)
 
+    def __sub__(self, other):
+        return Difference(self, other)
+
+    def __pow__(self, power, modulo=None):
+        return Power(self, power)
+
 
 class Variable(Unit):
     def __init__(self, value=None):
@@ -79,6 +85,34 @@ class Product(Unit):
     def __mul__(self, other):
         self.add_parent(other)
         return self
+
+
+class Difference(Unit):
+    def __init__(self, left, right):
+        super().__init__(left, right)
+
+    def evaluate(self):
+        return self.parents[0].evaluate() - self.parents[1].evaluate()
+
+    def get_gradient(self, index):
+        if index == 0:
+            return Variable(1)
+        else:
+            return Variable(-1)
+
+
+class Power(Unit):
+    def __init__(self, target, power):
+        self.power = power
+        super().__init__(target)
+
+    def evaluate(self):
+        return self.parents[0].evaluate() ** self.power
+
+    def get_gradient(self, index):
+        if self.power == 2:
+            return Variable(2) * self.parents[0]
+        return Variable(self.power) * Power(self.parents[0], self.power - 1)
 
 
 class Relu(Unit):

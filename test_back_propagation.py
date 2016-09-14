@@ -31,6 +31,14 @@ class TestBackPropagation(TestCase):
         self.assertEqual(sum_unit.get_gradient(1).evaluate(), 1)
         self.assertEqual(sum_unit.get_gradient(2).evaluate(), 1)
 
+    def test_difference(self):
+        variable1 = Variable(2)
+        variable2 = Variable(3)
+        difference = Difference(variable1, variable2)
+        self.assertEqual(difference.evaluate(), -1)
+        self.assertEqual(difference.get_gradient(0).evaluate(), 1)
+        self.assertEqual(difference.get_gradient(1).evaluate(), -1)
+
     def test_product(self):
         variable = Variable(2)
         product = Product(variable)
@@ -89,7 +97,7 @@ class TestBackPropagation(TestCase):
         y = [Variable(0), Variable(1)]
         w = Variable(0)
         f = [w * x[0], w * x[1]]
-        J = (y[0] + Variable(-1) * f[0]) * (y[0] + Variable(-1) * f[0]) + (y[1] + Variable(-1) * f[1]) * (y[1] + Variable(-1) * f[1])
+        J = (y[0] - f[0]) ** 2 + (y[1] - f[1]) ** 2
         dw = differentiate(J, w)
 
         for i in range(10):
