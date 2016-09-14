@@ -29,7 +29,7 @@ class Sum(Unit):
     def evaluate(self):
         return sum(parent.evaluate() for parent in self.parents)
 
-    def get_gradient(self, _):
+    def get_gradient(self, parent):
         return Variable(1)
 
 
@@ -52,15 +52,16 @@ class Product(Unit):
             return Product(*(p for p in self.parents if p is not parent))
 
 
-def build_grad(variable):
+def differentiate(target, variable):
     gradients = []
+
     for child in variable.get_children():
         gradient = child.get_gradient(variable)
 
-        if len(child.get_children()) == 0:
+        if child is target:
             gradients.append(gradient)
         else:
-            child_gradient = build_grad(child)
+            child_gradient = differentiate(target, child)
             gradients.append(Product(child_gradient, gradient))
 
     if len(gradients) == 1:

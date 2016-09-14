@@ -47,26 +47,26 @@ class TestBackPropagation(TestCase):
         self.assertEqual(product.get_gradient(variable2).evaluate(), 8)
         self.assertEqual(product.get_gradient(variable3).evaluate(), 6)
 
-    def test_build_grad(self):
+    def test_differentiate(self):
         variable = Variable(2)
-        self.assertEqual(build_grad(variable).evaluate(), 0)
+        self.assertEqual(differentiate(variable, variable).evaluate(), 0)
 
         x = Variable(4)
-        Sum(x, x)
-        self.assertEqual(build_grad(x).evaluate(), 2)
+        y = Sum(x, x)
+        self.assertEqual(differentiate(y, x).evaluate(), 2)
 
         x = Variable(4)
-        Product(x, x)
-        self.assertEqual(build_grad(x).evaluate(), 8)
+        y = Product(x, x)
+        self.assertEqual(differentiate(y, x).evaluate(), 8)
 
         x = Variable(4)
-        Product(Variable(3), Product(Variable(2), x))
-        self.assertEqual(build_grad(x).evaluate(), 6)
+        y = Product(Variable(3), Product(Variable(2), x))
+        self.assertEqual(differentiate(y, x).evaluate(), 6)
 
         x = Variable(4)
-        Sum(x, Product(x, x))
-        self.assertEqual(build_grad(x).evaluate(), 9)
+        y = Sum(x, Product(x, x))
+        self.assertEqual(differentiate(y, x).evaluate(), 9)
 
         x = Variable(4)
-        Product(x, Product(x, x))
-#        self.assertEqual(build_grad(x).evaluate(), 3 * 16)
+        y = Product(x, Product(x, x))
+        self.assertEqual(differentiate(y, x).evaluate(), 3 * 16)
