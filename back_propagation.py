@@ -6,6 +6,10 @@ class Unit:
 
         self.children = []
 
+    def add_parent(self, parent):
+        self.parents.append(parent)
+        parent.add_child(self)
+
     def get_parents(self):
         return self.parents
 
@@ -56,15 +60,21 @@ def differentiate(target, variable):
     gradients = []
 
     for child in variable.get_children():
-        gradient = child.get_gradient(variable)
+        local_gradient = child.get_gradient(variable)
 
         if child is target:
-            gradients.append(gradient)
+            gradients.append(local_gradient)
         else:
             child_gradient = differentiate(target, child)
-            gradients.append(Product(child_gradient, gradient))
+            if type(child_gradient) is Product:
+                child_gradient.add_parent(local_gradient)
+                gradients.append(child_gradient)
+            else:
+                gradients.append(Product(child_gradient, local_gradient))
 
-    if len(gradients) == 1:
+    if len(gradients) == 0:
+        gradient = Variable(0)
+    elif len(gradients) == 1:
         gradient = gradients[0]
     else:
         gradient = Sum(*gradients)
