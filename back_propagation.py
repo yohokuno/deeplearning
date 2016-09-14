@@ -1,20 +1,20 @@
 class Unit:
     def __init__(self, *parents):
         self.parents = list(parents)
-        for parent in parents:
-            parent.add_child(self)
+        for i, parent in enumerate(parents):
+            parent.add_child(self, i)
 
         self.children = []
 
     def add_parent(self, parent):
         self.parents.append(parent)
-        parent.add_child(self)
+        parent.add_child(self, len(self.parents) - 1)
 
     def get_parents(self):
         return self.parents
 
-    def add_child(self, child):
-        self.children.append(child)
+    def add_child(self, child, index):
+        self.children.append((child, index))
 
     def get_children(self):
         return self.children
@@ -49,7 +49,7 @@ class Sum(Unit):
     def evaluate(self):
         return sum(parent.evaluate() for parent in self.parents)
 
-    def get_gradient(self, parent):
+    def get_gradient(self, index):
         return Variable(1)
 
     def __iadd__(self, other):
@@ -64,16 +64,13 @@ class Product(Unit):
             result *= parent.evaluate()
         return result
 
-    def get_gradient(self, parent):
+    def get_gradient(self, index):
         if len(self.parents) == 1:
             return Variable(1.0)
         elif len(self.parents) == 2:
-            if parent is self.parents[0]:
-                return self.parents[1]
-            else:
-                return self.parents[0]
+            return self.parents[abs(index - 1)]
         else:
-            return Product(*(p for p in self.parents if p is not parent))
+            return Product(*(self.parents[i] for i in range(len(self.parents)) if i != index))
 
     def __mul__(self, other):
         self.add_parent(other)
@@ -86,8 +83,8 @@ def differentiate(target, variable):
 
     gradient = Variable(0)
 
-    for child in variable.get_children():
-        local_gradient = child.get_gradient(variable)
+    for child, index in variable.get_children():
+        local_gradient = child.get_gradient(index)
         child_gradient = differentiate(target, child)
         gradient += child_gradient * local_gradient
 
