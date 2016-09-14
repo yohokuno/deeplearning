@@ -79,4 +79,7 @@ class TestBackPropagation(TestCase):
 
         x = Variable(3)
         y = x * x * x
-        self.assertEqual(differentiate(y, x).evaluate(), 27)
+        derivative = differentiate(y, x)
+        self.assertEqual(derivative.evaluate(), 27)
+        second_derivative = differentiate(derivative, x)
+        self.assertEqual(second_derivative.evaluate(), 18)
