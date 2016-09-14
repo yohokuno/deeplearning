@@ -83,3 +83,18 @@ class TestBackPropagation(TestCase):
         self.assertEqual(derivative.evaluate(), 27)
         second_derivative = differentiate(derivative, x)
         self.assertEqual(second_derivative.evaluate(), 18)
+
+    def test_linear_regression(self):
+        x = [Variable(0), Variable(1)]
+        y = [Variable(0), Variable(1)]
+        w = Variable(0)
+        f = [w * x[0], w * x[1]]
+        J = (y[0] + Variable(-1) * f[0]) * (y[0] + Variable(-1) * f[0]) + (y[1] + Variable(-1) * f[1]) * (y[1] + Variable(-1) * f[1])
+        dw = differentiate(J, w)
+
+        for i in range(10):
+            w_new = w.evaluate() - 0.5 * dw.evaluate()
+            w.set_value(w_new)
+
+        self.assertAlmostEqual(w.evaluate(), 1)
+        self.assertAlmostEqual(J.evaluate(), 0)

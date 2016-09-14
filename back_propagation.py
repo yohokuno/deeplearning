@@ -35,6 +35,9 @@ class Variable(Unit):
     def evaluate(self):
         return self.value
 
+    def set_value(self, value):
+        self.value = value
+
     def __add__(self, other):
         if self.evaluate() == 0:
             return other
@@ -76,6 +79,20 @@ class Product(Unit):
     def __mul__(self, other):
         self.add_parent(other)
         return self
+
+
+class Relu(Unit):
+    def evaluate(self):
+        result = 0
+        for parent in self.parents:
+            result += max(0, parent.evaluate())
+        return result
+
+    def get_gradient(self, index):
+        if self.parents[index] > 0:
+            return Variable(1)
+        else:
+            return Variable(0)
 
 
 def differentiate(target, variable):
