@@ -16,55 +16,46 @@ class Unit:
         return self.children
 
 
-class Constant(Unit):
+class Variable(Unit):
     def __init__(self, value=None):
         self.value = value
-        super(Constant, self).__init__()
+        super().__init__()
 
     def evaluate(self):
         return self.value
 
 
 class Sum(Unit):
-    def get_gradient(self):
-        return [Constant(1) for _ in self.parents]
-
     def evaluate(self):
         return sum(parent.evaluate() for parent in self.parents)
 
+    def get_gradient(self, _):
+        return Variable(1)
+
 
 class Product(Unit):
-    def get_gradient(self):
-        if len(self.parents) == 1:
-            return [Constant(1.0)]
-        elif len(self.parents) == 2:
-            return self.parents[1], self.parents[0]
-        return [Product(*(self.parents[:i] + self.parents[i+1:])) for i in range(len(self.parents))]
-
     def evaluate(self):
         result = 1.0
         for parent in self.parents:
             result *= parent.evaluate()
         return result
 
-
-def back_propagation(output, targets):
-    grad_table = dict()
-    grad_table[output] = 1
-
-    for variable in targets:
-        build_grad(variable, output, grad_table)
-
-    return grad_table
+    def get_gradient(self, parent):
+        if len(self.parents) == 1:
+            return Variable(1.0)
+        elif len(self.parents) == 2:
+            if parent is self.parents[0]:
+                return self.parents[1]
+            else:
+                return self.parents[0]
+        else:
+            return Product(*(p for p in self.parents if p is not parent))
 
 
 def build_grad(variable):
     gradients = []
     for child in variable.get_children():
-        for parent, gradient in zip(child.get_parents(), child.get_gradient()):
-            if parent is variable:
-                # found gradient respect to parent
-                break
+        gradient = child.get_gradient(variable)
 
         if len(child.get_children()) == 0:
             gradients.append(gradient)
