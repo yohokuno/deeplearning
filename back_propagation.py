@@ -14,6 +14,7 @@ class Unit:
         return self.parents
 
     def add_child(self, child, index):
+        # A child is a pair of child unit and index of self unit within parents of child unit
         self.children.append((child, index))
 
     def get_children(self):
@@ -52,7 +53,7 @@ class Sum(Unit):
     def get_gradient(self, index):
         return Variable(1)
 
-    def __iadd__(self, other):
+    def __add__(self, other):
         self.add_parent(other)
         return self
 

@@ -22,13 +22,14 @@ class TestBackPropagation(TestCase):
         variable2 = Variable(3)
         sum_unit = Sum(variable1, variable2)
         self.assertEqual(sum_unit.evaluate(), 5)
-        self.assertEqual(sum_unit.get_gradient(variable1).evaluate(), 1)
-        self.assertEqual(sum_unit.get_gradient(variable2).evaluate(), 1)
+        self.assertEqual(sum_unit.get_gradient(0).evaluate(), 1)
+        self.assertEqual(sum_unit.get_gradient(1).evaluate(), 1)
 
-        sum_unit = variable1 + variable2
-        self.assertEqual(sum_unit.evaluate(), 5)
-        self.assertEqual(sum_unit.get_gradient(variable1).evaluate(), 1)
-        self.assertEqual(sum_unit.get_gradient(variable2).evaluate(), 1)
+        sum_unit = variable1 + variable2 + Variable(4)
+        self.assertEqual(sum_unit.evaluate(), 9)
+        self.assertEqual(sum_unit.get_gradient(0).evaluate(), 1)
+        self.assertEqual(sum_unit.get_gradient(1).evaluate(), 1)
+        self.assertEqual(sum_unit.get_gradient(2).evaluate(), 1)
 
     def test_product(self):
         variable = Variable(2)
