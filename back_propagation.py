@@ -1,6 +1,6 @@
 class Unit:
     def __init__(self, *parents):
-        self.parents = parents
+        self.parents = list(parents)
         for parent in parents:
             parent.add_child(self)
 
@@ -19,6 +19,12 @@ class Unit:
     def get_children(self):
         return self.children
 
+    def __add__(self, other):
+        return Sum(self, other)
+
+    def __mul__(self, other):
+        return Product(self, other)
+
 
 class Variable(Unit):
     def __init__(self, value=None):
@@ -28,6 +34,16 @@ class Variable(Unit):
     def evaluate(self):
         return self.value
 
+    def __add__(self, other):
+        if self.evaluate() == 0:
+            return other
+        return super().__add__(other)
+
+    def __mul__(self, other):
+        if self.evaluate() == 1:
+            return other
+        return super().__mul__(other)
+
 
 class Sum(Unit):
     def evaluate(self):
@@ -35,6 +51,10 @@ class Sum(Unit):
 
     def get_gradient(self, parent):
         return Variable(1)
+
+    def __iadd__(self, other):
+        self.add_parent(other)
+        return self
 
 
 class Product(Unit):
@@ -55,27 +75,20 @@ class Product(Unit):
         else:
             return Product(*(p for p in self.parents if p is not parent))
 
+    def __mul__(self, other):
+        self.add_parent(other)
+        return self
+
 
 def differentiate(target, variable):
-    gradients = []
+    if variable is target:
+        return Variable(1)
+
+    gradient = Variable(0)
 
     for child in variable.get_children():
         local_gradient = child.get_gradient(variable)
+        child_gradient = differentiate(target, child)
+        gradient += child_gradient * local_gradient
 
-        if child is target:
-            gradients.append(local_gradient)
-        else:
-            child_gradient = differentiate(target, child)
-            if type(child_gradient) is Product:
-                child_gradient.add_parent(local_gradient)
-                gradients.append(child_gradient)
-            else:
-                gradients.append(Product(child_gradient, local_gradient))
-
-    if len(gradients) == 0:
-        gradient = Variable(0)
-    elif len(gradients) == 1:
-        gradient = gradients[0]
-    else:
-        gradient = Sum(*gradients)
     return gradient

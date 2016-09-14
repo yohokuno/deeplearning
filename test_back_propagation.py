@@ -25,6 +25,11 @@ class TestBackPropagation(TestCase):
         self.assertEqual(sum_unit.get_gradient(variable1).evaluate(), 1)
         self.assertEqual(sum_unit.get_gradient(variable2).evaluate(), 1)
 
+        sum_unit = variable1 + variable2
+        self.assertEqual(sum_unit.evaluate(), 5)
+        self.assertEqual(sum_unit.get_gradient(variable1).evaluate(), 1)
+        self.assertEqual(sum_unit.get_gradient(variable2).evaluate(), 1)
+
     def test_product(self):
         variable = Variable(2)
         product = Product(variable)
@@ -47,23 +52,30 @@ class TestBackPropagation(TestCase):
         self.assertEqual(product.get_gradient(variable2).evaluate(), 8)
         self.assertEqual(product.get_gradient(variable3).evaluate(), 6)
 
+        variable1 = Variable(2)
+        variable2 = Variable(3)
+        product = Product(variable1, variable2)
+        self.assertEqual(product.evaluate(), 6)
+        self.assertEqual(product.get_gradient(variable1).evaluate(), 3)
+        self.assertEqual(product.get_gradient(variable2).evaluate(), 2)
+
     def test_differentiate(self):
         x = Variable(3)
         y = Variable(2)
         self.assertEqual(differentiate(y, x).evaluate(), 0)
 
         x = Variable(3)
-        y = Product(Variable(4), x)
+        y = Variable(4) * x
         self.assertEqual(differentiate(y, x).evaluate(), 4)
 
         x = Variable(3)
-        y = Product(x, x)
+        y = x * x
         self.assertEqual(differentiate(y, x).evaluate(), 6)
 
         x = Variable(3)
-        y = Sum(x, Product(x, x))
+        y = x + x * x
         self.assertEqual(differentiate(y, x).evaluate(), 7)
 
         x = Variable(3)
-        y = Product(x, Product(x, x))
+        y = x * x * x
         self.assertEqual(differentiate(y, x).evaluate(), 27)
