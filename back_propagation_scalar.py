@@ -1,3 +1,6 @@
+import numpy as np
+
+
 class Unit:
     def __init__(self, *parents):
         self.parents = list(parents)

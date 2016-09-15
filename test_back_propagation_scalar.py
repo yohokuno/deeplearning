@@ -1,8 +1,8 @@
 from unittest import TestCase
-from back_propagation import *
+from back_propagation_scalar import *
 
 
-class TestBackPropagation(TestCase):
+class TestBackPropagationScalar(TestCase):
     def test_unit(self):
         unit1 = Unit()
         unit2 = Unit()
