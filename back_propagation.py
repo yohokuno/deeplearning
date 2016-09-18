@@ -135,7 +135,22 @@ class MatrixMultiply(Unit):
         return self.parents[0].evaluate() @ self.parents[1].evaluate()
 
     def get_gradient(self, index):
-        return self.parents[abs(index - 1)]
+        if index == 0:
+            return self.parents[1]
+        else:
+            return Transpose(self.parents[0])
+
+
+class Transpose(Unit):
+    def evaluate(self):
+        result = self.parents[0].evaluate()
+        if type(result) in (int, float):
+            return result
+        else:
+            return result.T
+
+    def get_gradient(self, index):
+        return Variable(1)
 
 
 class Relu(Unit):

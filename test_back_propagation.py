@@ -98,6 +98,11 @@ class TestBackPropagation(TestCase):
         np.testing.assert_almost_equal(matrix_multiply.get_gradient(0).evaluate(), np.array([3, 4]))
         np.testing.assert_almost_equal(matrix_multiply.get_gradient(1).evaluate(), np.array([1, 2]))
 
+        matrix_multiply = MatrixMultiply(Variable(np.array([[1, 2], [3, 4]])), Variable(np.array([5, 6])))
+        np.testing.assert_almost_equal(matrix_multiply.evaluate(), np.array([17, 39]))
+        np.testing.assert_almost_equal(matrix_multiply.get_gradient(0).evaluate(), np.array([5, 6]))
+        np.testing.assert_almost_equal(matrix_multiply.get_gradient(1).evaluate(), np.array([[1, 3], [2, 4]]))
+
     def test_relu(self):
         relu = Relu(Variable(3))
         self.assertEqual(relu.evaluate(), 3)
@@ -190,20 +195,22 @@ class TestBackPropagation(TestCase):
     def test_multi_layer_perceptron(self):
         X = Variable(np.array([[0, 0], [1, 0], [0, 1], [1, 1]]))
         y = Variable(np.array([0, 1, 1, 0]))
-        W1 = Variable(np.random.rand(2, 2))
-        c = Variable(np.random.rand(2))
+        #W1 = Variable(np.random.rand(2, 2))
+        W1 = Variable(np.array([[1, 1], [1, 1]]))
+        #c = Variable(np.random.rand(2))
+        c = Variable(np.array([0, -1]))
         w2 = Variable(np.random.rand(2))
         p = Relu(X @ W1 + c) @ w2
         J = Sum((y - p) ** 2)
-        dW1 = differentiate(J, W1)
-        dc = differentiate(J, c)
         dw2 = differentiate(J, w2)
+        dc = differentiate(J, c)
+        dW1 = differentiate(J, W1)
 
         learning_rate = 0.5
         for i in range(10):
             w2.set_value(w2.evaluate() - learning_rate * dw2.evaluate())
-            c.set_value(c.evaluate() - learning_rate * dc.evaluate())
-            W1.set_value(W1.evaluate() - learning_rate * dW1.evaluate())
+ #           c.set_value(c.evaluate() - learning_rate * dc.evaluate())
+ #           W1.set_value(W1.evaluate() - learning_rate * dW1.evaluate())
 
         self.assertAlmostEqual(J.evaluate(), 0)
         np.testing.assert_almost_equal(W1.evaluate(), np.array([[1, 1], [1, 1]]))
