@@ -29,6 +29,11 @@ class TestBackPropagation(TestCase):
         np.testing.assert_almost_equal(add.get_gradient(0).evaluate(), np.ones(2))
         np.testing.assert_almost_equal(add.get_gradient(1).evaluate(), np.ones(2))
 
+        add = Add(Variable(np.array([1, 2])), Variable(3))
+        np.testing.assert_almost_equal(add.evaluate(), np.array([4, 5]))
+        np.testing.assert_almost_equal(add.get_gradient(0).evaluate(), np.array([1, 1]))
+        np.testing.assert_almost_equal(add.get_gradient(1).evaluate(), np.array([1, 1]))
+
     def test_subtract(self):
         subtract = Subtract(Variable(2), Variable(3))
         self.assertEqual(subtract.evaluate(), -1)
@@ -114,11 +119,7 @@ class TestBackPropagation(TestCase):
 
         relu = Relu(Variable(np.array([1, -2])))
         np.testing.assert_almost_equal(relu.evaluate(), np.array([1, 0]))
-        np.testing.assert_almost_equal(relu.get_gradient(0).evaluate(), np.array([1, 0]))
-
-        relu = Relu(Variable(np.array([[1, -2], [-3, 4]])))
-        np.testing.assert_almost_equal(relu.evaluate(), np.array([[1, 0], [0, 4]]))
-        np.testing.assert_almost_equal(relu.get_gradient(0).evaluate(), np.array([[1, 0], [0, 1]]))
+        np.testing.assert_almost_equal(relu.get_gradient(0).evaluate(), np.array([[1, 0], [0, 0]]))
 
     def test_differentiate(self):
         x = Variable(3)
@@ -221,12 +222,12 @@ class TestBackPropagation(TestCase):
     def test_c(self):
         XW = Variable(np.array([[0, 0], [1, 1], [1, 1], [2, 2]]))
         y = Variable(np.array([0, 1, 1, 0]))
-        c = Variable([0.5, 0.5])
+        c = Variable([0.5, -0.5])
         w2 = Variable(np.array([1, -2]))
-        p = Relu(c) @ w2
+        p = Relu(XW + c) @ w2
         #J = Sum((p - y) ** 2)
         #dc = differentiate(J, c)
         #dc.evaluate()
         dp_dc = differentiate(p, c)
-#        self.assertEqual(dp_dc.evaluate(), 0)
+        np.testing.assert_almost_equal(dp_dc.evaluate(), 0)
         self.assertEqual(dp_dc.evaluate().size, 2)

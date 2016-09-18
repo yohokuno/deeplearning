@@ -147,12 +147,15 @@ class Relu(Unit):
         return np.max(np.concatenate([A, np.zeros(A.shape)]), 0)
 
     def get_gradient(self, index):
-        return Step(self.parents[index])
+        return ReluGradient(self.parents[index])
 
 
-class Step(Unit):
+class ReluGradient(Unit):
     def evaluate(self):
-        return np.sign(self.parents[0].evaluate()) / 2.0 + 0.5
+        result = np.sign(self.parents[0].evaluate()) / 2.0 + 0.5
+        if len(result.shape) == 1:
+            return np.diag(result)
+        return result
 
     def get_gradient(self, index):
         return ZERO
