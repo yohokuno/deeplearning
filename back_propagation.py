@@ -50,15 +50,14 @@ class Variable(Unit):
     def set_value(self, value):
         self.value = value
 
-#    def __add__(self, other):
-#        if type(self.value) in (int, float) and self.evaluate() == 0:
-#            return other
-#        return super().__add__(other)
+    def __add__(self, other):
+        return super().__add__(other)
 
-#    def __mul__(self, other):
-#        if type(self.value) in (int, float) and self.evaluate() == 1:
-#            return other
-#        return super().__mul__(other)
+    def __mul__(self, other):
+        return super().__mul__(other)
+
+ZERO = Variable(0)
+ONE = Variable(1)
 
 
 class Add(Unit):
@@ -66,23 +65,16 @@ class Add(Unit):
         return sum(parent.evaluate() for parent in self.parents)
 
     def get_gradient(self, index):
-        return Variable(1.0)
-
-#    def __add__(self, other):
-#        self.add_parent(other)
-#        return self
+        return ONE
 
 
 class Subtract(Unit):
-    def __init__(self, left, right):
-        super().__init__(left, right)
-
     def evaluate(self):
-        return self.parents[0].evaluate() - self.parents[1].evaluate()
+        return self.parents[0].evaluate() - sum(parent.evaluate() for parent in self.parents[1:])
 
     def get_gradient(self, index):
         if index == 0:
-            return Variable(1.0)
+            return ONE
         else:
             return Variable(-1.0)
 
@@ -99,10 +91,6 @@ class Multiply(Unit):
             return self.parents[abs(index - 1)]
         else:
             return Multiply(*(self.parents[i] for i in range(len(self.parents)) if i != index))
-
-#    def __mul__(self, other):
-#        self.add_parent(other)
-#        return self
 
 
 class Power(Unit):
@@ -125,7 +113,7 @@ class Sum(Unit):
         return sum(np.sum(parent.evaluate()) for parent in self.parents)
 
     def get_gradient(self, index):
-        return Variable(1.0)
+        return ONE
 
 
 class MatrixMultiply(Unit):
@@ -150,7 +138,7 @@ class Transpose(Unit):
             return result.T
 
     def get_gradient(self, index):
-        return Variable(1)
+        return ONE
 
 
 class Relu(Unit):
@@ -167,18 +155,32 @@ class Step(Unit):
         return np.sign(self.parents[0].evaluate()) / 2.0 + 0.5
 
     def get_gradient(self, index):
-        return Variable(0)
+        return ZERO
 
 
 def differentiate(target, variable):
     if variable is target:
-        return Variable(1)
+        return ONE
 
-    gradient = Variable(0)
+    gradient = ZERO
 
     for child, index in variable.get_children():
         local_gradient = child.get_gradient(index)
         child_gradient = differentiate(target, child)
-        gradient += local_gradient @ child_gradient
+
+        if child_gradient is ONE:
+            current_gradient = local_gradient
+        elif local_gradient is ONE:
+            current_gradient = child_gradient
+        elif local_gradient is ZERO or child_gradient is ZERO:
+            current_gradient = ZERO
+        else:
+            current_gradient = local_gradient @ child_gradient
+
+        if current_gradient is not ZERO:
+            if gradient is ZERO:
+                gradient = current_gradient
+            else:
+                gradient += current_gradient
 
     return gradient
