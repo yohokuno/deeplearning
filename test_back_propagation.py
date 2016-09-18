@@ -1,8 +1,8 @@
 from unittest import TestCase
-from back_propagation_scalar import *
+from back_propagation import *
 
 
-class TestBackPropagationScalar(TestCase):
+class TestBackPropagation(TestCase):
     def test_unit(self):
         unit1 = Unit()
         unit2 = Unit()
@@ -17,19 +17,19 @@ class TestBackPropagationScalar(TestCase):
     def test_variable(self):
         self.assertEqual(Variable(2).evaluate(), 2)
 
-    def test_sum(self):
+    def test_add(self):
         variable1 = Variable(2)
         variable2 = Variable(3)
-        sum_unit = Sum(variable1, variable2)
-        self.assertEqual(sum_unit.evaluate(), 5)
-        self.assertEqual(sum_unit.get_gradient(0).evaluate(), 1)
-        self.assertEqual(sum_unit.get_gradient(1).evaluate(), 1)
+        add = Add(variable1, variable2)
+        self.assertEqual(add.evaluate(), 5)
+        self.assertEqual(add.get_gradient(0).evaluate(), 1)
+        self.assertEqual(add.get_gradient(1).evaluate(), 1)
 
-        sum_unit = variable1 + variable2 + Variable(4)
-        self.assertEqual(sum_unit.evaluate(), 9)
-        self.assertEqual(sum_unit.get_gradient(0).evaluate(), 1)
-        self.assertEqual(sum_unit.get_gradient(1).evaluate(), 1)
-        self.assertEqual(sum_unit.get_gradient(2).evaluate(), 1)
+        add = variable1 + variable2 + Variable(4)
+        self.assertEqual(add.evaluate(), 9)
+        self.assertEqual(add.get_gradient(0).evaluate(), 1)
+        self.assertEqual(add.get_gradient(1).evaluate(), 1)
+        self.assertEqual(add.get_gradient(2).evaluate(), 1)
 
     def test_difference(self):
         variable1 = Variable(2)
@@ -39,34 +39,34 @@ class TestBackPropagationScalar(TestCase):
         self.assertEqual(difference.get_gradient(0).evaluate(), 1)
         self.assertEqual(difference.get_gradient(1).evaluate(), -1)
 
-    def test_product(self):
+    def test_multiply(self):
         variable = Variable(2)
-        product = Product(variable)
-        self.assertEqual(product.evaluate(), 2)
-        self.assertEqual(product.get_gradient(0).evaluate(), 1)
+        multiply = Multiply(variable)
+        self.assertEqual(multiply.evaluate(), 2)
+        self.assertEqual(multiply.get_gradient(0).evaluate(), 1)
 
         variable1 = Variable(2)
         variable2 = Variable(3)
-        product = Product(variable1, variable2)
-        self.assertEqual(product.evaluate(), 6)
-        self.assertEqual(product.get_gradient(0).evaluate(), 3)
-        self.assertEqual(product.get_gradient(1).evaluate(), 2)
+        multiply = Multiply(variable1, variable2)
+        self.assertEqual(multiply.evaluate(), 6)
+        self.assertEqual(multiply.get_gradient(0).evaluate(), 3)
+        self.assertEqual(multiply.get_gradient(1).evaluate(), 2)
 
         variable1 = Variable(2)
         variable2 = Variable(3)
         variable3 = Variable(4)
-        product = Product(variable1, variable2, variable3)
-        self.assertEqual(product.evaluate(), 24)
-        self.assertEqual(product.get_gradient(0).evaluate(), 12)
-        self.assertEqual(product.get_gradient(1).evaluate(), 8)
-        self.assertEqual(product.get_gradient(2).evaluate(), 6)
+        multiply = Multiply(variable1, variable2, variable3)
+        self.assertEqual(multiply.evaluate(), 24)
+        self.assertEqual(multiply.get_gradient(0).evaluate(), 12)
+        self.assertEqual(multiply.get_gradient(1).evaluate(), 8)
+        self.assertEqual(multiply.get_gradient(2).evaluate(), 6)
 
         variable1 = Variable(2)
         variable2 = Variable(3)
-        product = Product(variable1, variable2)
-        self.assertEqual(product.evaluate(), 6)
-        self.assertEqual(product.get_gradient(0).evaluate(), 3)
-        self.assertEqual(product.get_gradient(1).evaluate(), 2)
+        multiply = Multiply(variable1, variable2)
+        self.assertEqual(multiply.evaluate(), 6)
+        self.assertEqual(multiply.get_gradient(0).evaluate(), 3)
+        self.assertEqual(multiply.get_gradient(1).evaluate(), 2)
 
     def test_differentiate(self):
         x = Variable(3)

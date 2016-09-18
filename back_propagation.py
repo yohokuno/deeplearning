@@ -1,3 +1,6 @@
+import numpy as np
+
+
 class Unit:
     def __init__(self, *parents):
         self.parents = list(parents)
@@ -21,10 +24,10 @@ class Unit:
         return self.children
 
     def __add__(self, other):
-        return Sum(self, other)
+        return Add(self, other)
 
     def __mul__(self, other):
-        return Product(self, other)
+        return Multiply(self, other)
 
     def __sub__(self, other):
         return Difference(self, other)
@@ -55,19 +58,22 @@ class Variable(Unit):
         return super().__mul__(other)
 
 
-class Sum(Unit):
+class Add(Unit):
     def evaluate(self):
         return sum(parent.evaluate() for parent in self.parents)
 
     def get_gradient(self, index):
-        return Variable(1)
+        if type(self.parents[index].evaluate()) in (int, float):
+            return Variable(1)
+        else:
+            return Variable(np.ones(self.parents[index].shape))
 
     def __add__(self, other):
         self.add_parent(other)
         return self
 
 
-class Product(Unit):
+class Multiply(Unit):
     def evaluate(self):
         result = 1.0
         for parent in self.parents:
@@ -80,7 +86,7 @@ class Product(Unit):
         elif len(self.parents) == 2:
             return self.parents[abs(index - 1)]
         else:
-            return Product(*(self.parents[i] for i in range(len(self.parents)) if i != index))
+            return Multiply(*(self.parents[i] for i in range(len(self.parents)) if i != index))
 
     def __mul__(self, other):
         self.add_parent(other)
