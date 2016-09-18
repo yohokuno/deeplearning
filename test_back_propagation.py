@@ -87,6 +87,17 @@ class TestBackPropagation(TestCase):
         np.testing.assert_almost_equal(power.evaluate(), np.array([4, 9]))
         np.testing.assert_almost_equal(power.get_gradient(0).evaluate(), np.array([4, 6]))
 
+    def test_sum(self):
+        sum = Sum(Variable(np.array([1, 2])))
+        self.assertEqual(sum.evaluate(), 3)
+        np.testing.assert_almost_equal(sum.get_gradient(0).evaluate(), np.ones(2))
+
+    def test_matrix_mutiply(self):
+        matrix_multiply = MatrixMultiply(Variable(np.array([1, 2])), Variable(np.array([3, 4])))
+        self.assertEqual(matrix_multiply.evaluate(), 11)
+        np.testing.assert_almost_equal(matrix_multiply.get_gradient(0).evaluate(), np.array([3, 4]))
+        np.testing.assert_almost_equal(matrix_multiply.get_gradient(1).evaluate(), np.array([1, 2]))
+
     def test_relu(self):
         relu = Relu(Variable(3))
         self.assertEqual(relu.evaluate(), 3)
@@ -127,12 +138,34 @@ class TestBackPropagation(TestCase):
         second_derivative = differentiate(derivative, x)
         self.assertEqual(second_derivative.evaluate(), 18)
 
+        x = Variable(np.array([1, 2]))
+        y = Variable(3) * x
+        np.testing.assert_almost_equal(differentiate(y, x).evaluate(), np.array([3, 3]))
+
+        x = Variable(np.array([1, 2]))
+        y = x + x * x
+        np.testing.assert_almost_equal(differentiate(y, x).evaluate(), np.array([3, 5]))
+
     def test_linear_regression(self):
         x = [Variable(0), Variable(1)]
         y = [Variable(0), Variable(1)]
         w = Variable(0)
         f = [w * x[0], w * x[1]]
         J = (y[0] - f[0]) ** 2 + (y[1] - f[1]) ** 2
+        dw = differentiate(J, w)
+
+        for i in range(10):
+            w_new = w.evaluate() - 0.5 * dw.evaluate()
+            w.set_value(w_new)
+
+        self.assertAlmostEqual(w.evaluate(), 1)
+        self.assertAlmostEqual(J.evaluate(), 0)
+
+        x = Variable(np.array([0, 1]))
+        y = Variable(np.array([0, 1]))
+        w = Variable(0)
+        f = w * x
+        J = Sum((y - f) ** 2)
         dw = differentiate(J, w)
 
         for i in range(10):
