@@ -18,18 +18,18 @@ class TestBackPropagation(TestCase):
         self.assertEqual(Variable(2).evaluate(), 2)
 
     def test_add(self):
-        variable1 = Variable(2)
-        variable2 = Variable(3)
-        add = Add(variable1, variable2)
+        add = Add(Variable(2), Variable(3))
         self.assertEqual(add.evaluate(), 5)
         self.assertEqual(add.get_gradient(0).evaluate(), 1)
         self.assertEqual(add.get_gradient(1).evaluate(), 1)
 
-        add = variable1 + variable2 + Variable(4)
-        self.assertEqual(add.evaluate(), 9)
-        self.assertEqual(add.get_gradient(0).evaluate(), 1)
-        self.assertEqual(add.get_gradient(1).evaluate(), 1)
-        self.assertEqual(add.get_gradient(2).evaluate(), 1)
+        A = Variable(np.array([[1, 2], [3, 4]]))
+        B = Variable(np.array([[5, 6], [7, 8]]))
+        add = Add(A, B)
+        C = np.array([[6, 8], [10, 12]])
+        np.testing.assert_almost_equal(add.evaluate(), C)
+        np.testing.assert_almost_equal(add.get_gradient(0).evaluate(), np.ones(A.evaluate().shape))
+        np.testing.assert_almost_equal(add.get_gradient(1).evaluate(), np.ones(B.evaluate().shape))
 
     def test_difference(self):
         variable1 = Variable(2)
