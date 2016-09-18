@@ -63,11 +63,7 @@ class Add(Unit):
         return sum(parent.evaluate() for parent in self.parents)
 
     def get_gradient(self, index):
-        # TODO: do not call evaluate() when getting gradient
-        if type(self.parents[index].evaluate()) in (int, float):
-            return Variable(1.0)
-        else:
-            return Variable(np.ones(self.parents[index].evaluate().shape))
+        return Variable(1.0)
 
     def __add__(self, other):
         self.add_parent(other)
@@ -83,14 +79,9 @@ class Subtract(Unit):
 
     def get_gradient(self, index):
         if index == 0:
-            sign = 1
+            return Variable(1.0)
         else:
-            sign = -1
-        # TODO: do not call evaluate() when getting gradient
-        if type(self.parents[0].evaluate()) in (int, float):
-            return Variable(sign)
-        else:
-            return Variable(sign * np.ones(self.parents[index].evaluate().shape))
+            return Variable(-1.0)
 
 
 class Multiply(Unit):
@@ -101,7 +92,6 @@ class Multiply(Unit):
         return result
 
     def get_gradient(self, index):
-        # TODO: do not call evaluate() when getting gradient
         if len(self.parents) == 2:
             return self.parents[abs(index - 1)]
         else:
