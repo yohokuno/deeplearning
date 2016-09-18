@@ -16,6 +16,7 @@ class TestBackPropagation(TestCase):
 
     def test_variable(self):
         self.assertEqual(Variable(2).evaluate(), 2)
+        np.testing.assert_almost_equal(Variable(np.array([1, 2])).evaluate(), np.array([1, 2]))
 
     def test_add(self):
         add = Add(Variable(2), Variable(3))
@@ -72,6 +73,23 @@ class TestBackPropagation(TestCase):
         np.testing.assert_almost_equal(multiply.get_gradient(0).evaluate(), np.array([15, 24]))
         np.testing.assert_almost_equal(multiply.get_gradient(1).evaluate(), np.array([5, 12]))
         np.testing.assert_almost_equal(multiply.get_gradient(2).evaluate(), np.array([3, 8]))
+
+    def test_power(self):
+        power = Power(Variable(2), 3)
+        self.assertEqual(power.evaluate(), 8)
+        self.assertEqual(power.get_gradient(0).evaluate(), 12)
+
+        power = Power(Variable(3), 2)
+        self.assertEqual(power.evaluate(), 9)
+        self.assertEqual(power.get_gradient(0).evaluate(), 6)
+
+        power = Power(Variable(np.array([1, 2])), 3)
+        np.testing.assert_almost_equal(power.evaluate(), np.array([1, 8]))
+        np.testing.assert_almost_equal(power.get_gradient(0).evaluate(), np.array([3, 12]))
+
+        power = Power(Variable(np.array([2, 3])), 2)
+        np.testing.assert_almost_equal(power.evaluate(), np.array([4, 9]))
+        np.testing.assert_almost_equal(power.get_gradient(0).evaluate(), np.array([4, 6]))
 
     def test_differentiate(self):
         x = Variable(3)

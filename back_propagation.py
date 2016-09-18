@@ -114,6 +114,7 @@ class Multiply(Unit):
 
 class Power(Unit):
     def __init__(self, target, power):
+        # TODO: support case when power is another unit
         self.power = power
         super().__init__(target)
 
