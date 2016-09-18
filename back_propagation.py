@@ -101,13 +101,8 @@ class Multiply(Unit):
         return result
 
     def get_gradient(self, index):
-        if len(self.parents) == 1:
-            # TODO: do not call evaluate() when getting gradient
-            if type(self.parents[0].evaluate()) in (int, float):
-                return Variable(1.0)
-            else:
-                return Variable(np.ones(self.parents[0].shape))
-        elif len(self.parents) == 2:
+        # TODO: do not call evaluate() when getting gradient
+        if len(self.parents) == 2:
             return self.parents[abs(index - 1)]
         else:
             return Multiply(*(self.parents[i] for i in range(len(self.parents)) if i != index))
