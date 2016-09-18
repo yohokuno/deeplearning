@@ -31,13 +31,19 @@ class TestBackPropagation(TestCase):
         np.testing.assert_almost_equal(add.get_gradient(0).evaluate(), np.ones(A.evaluate().shape))
         np.testing.assert_almost_equal(add.get_gradient(1).evaluate(), np.ones(B.evaluate().shape))
 
-    def test_difference(self):
-        variable1 = Variable(2)
-        variable2 = Variable(3)
-        difference = Difference(variable1, variable2)
-        self.assertEqual(difference.evaluate(), -1)
-        self.assertEqual(difference.get_gradient(0).evaluate(), 1)
-        self.assertEqual(difference.get_gradient(1).evaluate(), -1)
+    def test_subtract(self):
+        subtract = Subtract(Variable(2), Variable(3))
+        self.assertEqual(subtract.evaluate(), -1)
+        self.assertEqual(subtract.get_gradient(0).evaluate(), 1)
+        self.assertEqual(subtract.get_gradient(1).evaluate(), -1)
+
+        A = Variable(np.array([[5, 6], [7, 8]]))
+        B = Variable(np.array([[1, 2], [3, 4]]))
+        subtract = Subtract(A, B)
+        C = np.array([[4, 4], [4, 4]])
+        np.testing.assert_almost_equal(subtract.evaluate(), C)
+        np.testing.assert_almost_equal(subtract.get_gradient(0).evaluate(), np.ones(A.evaluate().shape))
+        np.testing.assert_almost_equal(subtract.get_gradient(1).evaluate(), -np.ones(B.evaluate().shape))
 
     def test_multiply(self):
         variable = Variable(2)

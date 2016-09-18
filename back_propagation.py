@@ -30,7 +30,7 @@ class Unit:
         return Multiply(self, other)
 
     def __sub__(self, other):
-        return Difference(self, other)
+        return Subtract(self, other)
 
     def __pow__(self, power, modulo=None):
         return Power(self, power)
@@ -74,6 +74,25 @@ class Add(Unit):
         return self
 
 
+class Subtract(Unit):
+    def __init__(self, left, right):
+        super().__init__(left, right)
+
+    def evaluate(self):
+        return self.parents[0].evaluate() - self.parents[1].evaluate()
+
+    def get_gradient(self, index):
+        if index == 0:
+            sign = 1
+        else:
+            sign = -1
+        # TODO: do not call evaluate() when getting gradient
+        if type(self.parents[0].evaluate()) in (int, float):
+            return Variable(sign)
+        else:
+            return Variable(sign * np.ones(self.parents[index].evaluate().shape))
+
+
 class Multiply(Unit):
     def evaluate(self):
         result = 1.0
@@ -96,25 +115,6 @@ class Multiply(Unit):
     def __mul__(self, other):
         self.add_parent(other)
         return self
-
-
-class Difference(Unit):
-    def __init__(self, left, right):
-        super().__init__(left, right)
-
-    def evaluate(self):
-        return self.parents[0].evaluate() - self.parents[1].evaluate()
-
-    def get_gradient(self, index):
-        if index == 0:
-            sign = 1
-        else:
-            sign = -1
-        # TODO: do not call evaluate() when getting gradient
-        if type(self.parents[0].evaluate()) in (int, float):
-            return Variable(sign)
-        else:
-            return Variable(sign * np.ones(self.parents[index].shape))
 
 
 class Power(Unit):
