@@ -119,16 +119,19 @@ class Power(Unit):
 
 class Relu(Unit):
     def evaluate(self):
-        result = 0
-        for parent in self.parents:
-            result += max(0, parent.evaluate())
-        return result
+        A = np.expand_dims(self.parents[0].evaluate(), 0)
+        return np.max(np.concatenate([A, np.zeros(A.shape)]), 0)
 
     def get_gradient(self, index):
-        if self.parents[index] > 0:
-            return Variable(1)
-        else:
-            return Variable(0)
+        return Step(self.parents[index])
+
+
+class Step(Unit):
+    def evaluate(self):
+        return np.sign(self.parents[0].evaluate()) / 2.0 + 0.5
+
+    def get_gradient(self, index):
+        return Variable(0)
 
 
 def differentiate(target, variable):
