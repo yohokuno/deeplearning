@@ -168,10 +168,14 @@ class Relu(Unit):
 
 class ReluGradient(Unit):
     def evaluate(self):
-        result = np.sign(self.parents[0].evaluate()) / 2.0 + 0.5
-        if len(result.shape) == 1:
+        parent_value = self.parents[0].evaluate()
+        result = np.sign(parent_value) / 2.0 + 0.5
+        if type(parent_value) in (int, float):
+            return result
+        if len(parent_value.shape) == 1:
             return np.diag(result)
-        return result
+        elif len(parent_value.shape) == 2:
+            return np.diagflat(parent_value).reshape(parent_value.shape * 2)
 
     def get_gradient(self, index):
         return ZERO

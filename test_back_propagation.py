@@ -126,6 +126,10 @@ class TestBackPropagation(TestCase):
         np.testing.assert_almost_equal(relu.evaluate(), np.array([1, 0]))
         np.testing.assert_almost_equal(relu.get_gradient(0).evaluate(), np.array([[1, 0], [0, 0]]))
 
+        relu = Relu(Variable(np.array([[1, -2], [-3, 4]])))
+        np.testing.assert_almost_equal(relu.evaluate(), np.array([[1, 0], [0, 4]]))
+        np.testing.assert_almost_equal(relu.get_gradient(0).evaluate(), [[[[1, 0], [0, 0]], [[0, -2], [0, 0]]], [[[0, 0], [-3, 0]], [[0, 0], [0, 4]]]])
+
     def test_differentiate(self):
         x = Variable(3)
         y = Variable(2)
