@@ -187,6 +187,21 @@ class TestBackPropagation(TestCase):
         self.assertAlmostEqual(w.evaluate(), 1)
         self.assertAlmostEqual(J.evaluate(), 0)
 
+    def test_multiple_regression_analysis(self):
+        X = Variable(np.array([[0, 0], [1, 0], [0, 1]]))
+        y = Variable(np.array([0, 1, 1]))
+        w = Variable(np.array([0, 0]))
+        p = X @ w
+        J = Sum((p - y) ** 2)
+        dw = differentiate(J, w)
+
+        for i in range(10):
+            w_new = w.evaluate() - 0.5 * dw.evaluate()
+            w.set_value(w_new)
+
+        np.testing.assert_almost_equal(w.evaluate(), [1, 1])
+        self.assertAlmostEqual(J.evaluate(), 0)
+
     def test_bias(self):
         x = Variable(np.array([0, 1]))
         y = Variable(np.array([1, 2]))
@@ -204,6 +219,26 @@ class TestBackPropagation(TestCase):
             b.set_value(b_new)
 
         self.assertAlmostEqual(w.evaluate(), 1)
+        self.assertAlmostEqual(b.evaluate(), 1)
+        self.assertAlmostEqual(J.evaluate(), 0)
+
+    def test_multi_regression_bias(self):
+        X = Variable(np.array([[0, 0], [1, 0], [0, 1]]))
+        y = Variable(np.array([1, 2, 2]))
+        w = Variable(np.array([0, 0]))
+        b = Variable(0)
+        p = X @ w + Repeat(b, 3)
+        J = Sum((p - y) ** 2)
+        dw = differentiate(J, w)
+        db = differentiate(J, b)
+
+        for i in range(10):
+            w_new = w.evaluate() - 0.5 * dw.evaluate()
+            w.set_value(w_new)
+            b_new = b.evaluate() - 0.5 * db.evaluate()
+            b.set_value(b_new)
+
+        np.testing.assert_almost_equal(w.evaluate(), [1, 1])
         self.assertAlmostEqual(b.evaluate(), 1)
         self.assertAlmostEqual(J.evaluate(), 0)
 

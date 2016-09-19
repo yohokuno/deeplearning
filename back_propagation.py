@@ -156,6 +156,7 @@ class Repeat(Unit):
         result[index] = 1
         return Variable(result)
 
+
 class Relu(Unit):
     def evaluate(self):
         A = np.expand_dims(self.parents[0].evaluate(), 0)
