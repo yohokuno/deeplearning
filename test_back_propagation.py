@@ -98,14 +98,20 @@ class TestBackPropagation(TestCase):
         np.testing.assert_almost_equal(sum.get_gradient(0).evaluate(), np.ones(2))
 
     def test_matrix_mutiply(self):
+        # vector-vector
         matrix_multiply = MatrixMultiply(Variable(np.array([1, 2])), Variable(np.array([3, 4])))
         self.assertEqual(matrix_multiply.evaluate(), 11)
         np.testing.assert_almost_equal(matrix_multiply.get_gradient(0).evaluate(), np.array([3, 4]))
         np.testing.assert_almost_equal(matrix_multiply.get_gradient(1).evaluate(), np.array([1, 2]))
 
+        # vector-matrix
+        matrix_multiply = MatrixMultiply(Variable(np.array([1, 2])), Variable(np.array([[3, 4], [5, 6]])))
+        np.testing.assert_almost_equal(matrix_multiply.evaluate(), np.array([13, 16]))
+        np.testing.assert_almost_equal(matrix_multiply.get_gradient(0).evaluate(), np.array([[3, 4], [5, 6]]))
+
+        # matrix-vector
         matrix_multiply = MatrixMultiply(Variable(np.array([[1, 2], [3, 4]])), Variable(np.array([5, 6])))
         np.testing.assert_almost_equal(matrix_multiply.evaluate(), np.array([17, 39]))
-        np.testing.assert_almost_equal(matrix_multiply.get_gradient(0).evaluate(), np.array([5, 6]))
         np.testing.assert_almost_equal(matrix_multiply.get_gradient(1).evaluate(), np.array([[1, 3], [2, 4]]))
 
     def test_repeat(self):
