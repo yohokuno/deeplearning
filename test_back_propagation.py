@@ -244,25 +244,43 @@ class TestBackPropagation(TestCase):
 
     def test_xor(self):
         X = Variable(np.array([[0, 0], [1, 0], [0, 1], [1, 1]]))
-        y = Variable(np.array([0, 1, 1, 0]))
-        W = Variable(np.array([[1, 1], [1, 1]]))
+        W1 = Variable(np.array([[1, 1], [1, 1]]))
         c = Variable(np.array([0, -1]))
-        w = Variable(np.array([1, -2]))
+        w2 = Variable(np.array([1, -2]))
 
-        np.testing.assert_almost_equal((X @ W).evaluate(), np.array([[0, 0], [1, 1], [1, 1], [2, 2]]))
-        np.testing.assert_almost_equal((X @ W + c).evaluate(), np.array([[0, -1], [1, 0], [1, 0], [2, 1]]))
-        np.testing.assert_almost_equal(Relu(X @ W + c).evaluate(), np.array([[0, 0], [1, 0], [1, 0], [2, 1]]))
-        np.testing.assert_almost_equal((Relu(X @ W + c) @ w).evaluate(), np.array([0, 1, 1, 0]))
+        np.testing.assert_almost_equal((X @ W1).evaluate(), np.array([[0, 0], [1, 1], [1, 1], [2, 2]]))
+        np.testing.assert_almost_equal((X @ W1 + c).evaluate(), np.array([[0, -1], [1, 0], [1, 0], [2, 1]]))
+        np.testing.assert_almost_equal(Relu(X @ W1 + c).evaluate(), np.array([[0, 0], [1, 0], [1, 0], [2, 1]]))
+        np.testing.assert_almost_equal((Relu(X @ W1 + c) @ w2).evaluate(), np.array([0, 1, 1, 0]))
 
-"""
+    def test_relu_regression(self):
+        X = Variable(np.array([[0, 0], [1, 0], [0, 1], [-10, -10]]))
+        y = Variable(np.array([1, 2, 2, 0]))
+        w = Variable(np.array([1, 1]))
+        b = Variable(2)
+        p = Relu(X @ w + Repeat(b, 4))
+        J = Sum((p - y) ** 2)
+        dw = differentiate(J, w)
+        db = differentiate(J, b)
+
+        for i in range(1000):
+            w_new = w.evaluate() - 0.1 * dw.evaluate()
+            w.set_value(w_new)
+            b_new = b.evaluate() - 0.1 * db.evaluate()
+            b.set_value(b_new)
+
+        self.assertAlmostEqual(J.evaluate(), 0)
+        np.testing.assert_almost_equal(w.evaluate(), [1, 1])
+        self.assertAlmostEqual(b.evaluate(), 1)
+
     def test_multi_layer_perceptron(self):
         X = Variable(np.array([[0, 0], [1, 0], [0, 1], [1, 1]]))
         y = Variable(np.array([0, 1, 1, 0]))
-        W1 = Variable(np.random.rand(2, 2))
-        c = Variable(np.random.rand(2))
-        w2 = Variable(np.random.rand(2))
-        p = Relu(X @ W1 + c) @ w2
-        J = Sum((y - p) ** 2)
+        W1 = Variable(np.array([[1, 1], [1, 1]]))
+        c = Variable(np.array([0, -1]))
+        w2 = Variable(np.array([1, -2]))
+        p = Relu(X @ W1 + Repeat(c, 4)) @ w2
+        J = Sum((p - y) ** 2)
 
         dw2 = differentiate(J, w2)
         dc = differentiate(J, c)
@@ -271,25 +289,10 @@ class TestBackPropagation(TestCase):
         learning_rate = 0.1
         for i in range(1000):
             w2.set_value(w2.evaluate() - learning_rate * dw2.evaluate())
-            c_new = c.evaluate() - learning_rate * dc.evaluate()
-            c.set_value(c_new)
+            c.set_value(c.evaluate() - learning_rate * dc.evaluate())
             W1.set_value(W1.evaluate() - learning_rate * dW1.evaluate())
 
         self.assertAlmostEqual(J.evaluate(), 0)
         np.testing.assert_almost_equal(W1.evaluate(), np.array([[1, 1], [1, 1]]))
         np.testing.assert_almost_equal(c.evaluate(), np.array([0, -1]))
         np.testing.assert_almost_equal(w2.evaluate(), np.array([1, -2]))
-
-    def test_c(self):
-        XW = Variable(np.array([[0, 0], [1, 1], [1, 1], [2, 2]]))
-        y = Variable(np.array([0, 1, 1, 0]))
-        c = Variable([0.5, -0.5])
-        w2 = Variable(np.array([1, -2]))
-        p = Relu(XW + Repeat(c, 4)) @ w2
-        #J = Sum((p - y) ** 2)
-        #dc = differentiate(J, c)
-        #dc.evaluate()
-        dp_dc = differentiate(p, c)
-        np.testing.assert_almost_equal(dp_dc.evaluate(), 0)
-        self.assertEqual(dp_dc.evaluate().size, 2)
-"""
