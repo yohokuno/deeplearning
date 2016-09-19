@@ -141,6 +141,21 @@ class Transpose(Unit):
         return ONE
 
 
+class Repeat(Unit):
+    def __init__(self, parent, repeat):
+        super().__init__()
+        self.repeat = repeat
+        for i in range(repeat):
+            self.add_parent(parent)
+
+    def evaluate(self):
+        return np.array([parent.evaluate() for parent in self.parents])
+
+    def get_gradient(self, index):
+        result = np.zeros(len(self.parents))
+        result[index] = 1
+        return Variable(result)
+
 class Relu(Unit):
     def evaluate(self):
         A = np.expand_dims(self.parents[0].evaluate(), 0)

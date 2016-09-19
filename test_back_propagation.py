@@ -108,6 +108,11 @@ class TestBackPropagation(TestCase):
         np.testing.assert_almost_equal(matrix_multiply.get_gradient(0).evaluate(), np.array([5, 6]))
         np.testing.assert_almost_equal(matrix_multiply.get_gradient(1).evaluate(), np.array([[1, 3], [2, 4]]))
 
+    def test_repeat(self):
+        repeat = Repeat(Variable(2), 3)
+        np.testing.assert_almost_equal(repeat.evaluate(), np.array([2, 2, 2]))
+        np.testing.assert_almost_equal(repeat.get_gradient(0).evaluate(), np.array([1, 0, 0]))
+
     def test_relu(self):
         relu = Relu(Variable(3))
         self.assertEqual(relu.evaluate(), 3)
@@ -224,7 +229,7 @@ class TestBackPropagation(TestCase):
         y = Variable(np.array([0, 1, 1, 0]))
         c = Variable([0.5, -0.5])
         w2 = Variable(np.array([1, -2]))
-        p = Relu(XW + c) @ w2
+        p = Relu(XW + Repeat(c, 4)) @ w2
         #J = Sum((p - y) ** 2)
         #dc = differentiate(J, c)
         #dc.evaluate()
