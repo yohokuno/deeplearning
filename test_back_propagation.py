@@ -267,36 +267,12 @@ class TestBackPropagation(TestCase):
         dw = differentiate(J, w)
         db = differentiate(J, b)
 
-        for i in range(1000):
-            w_new = w.evaluate() - 0.1 * dw.evaluate()
+        for i in range(100):
+            w_new = w.evaluate() - 0.4 * dw.evaluate()
             w.set_value(w_new)
-            b_new = b.evaluate() - 0.1 * db.evaluate()
+            b_new = b.evaluate() - 0.4 * db.evaluate()
             b.set_value(b_new)
 
         self.assertAlmostEqual(J.evaluate(), 0)
         np.testing.assert_almost_equal(w.evaluate(), [1, 1])
         self.assertAlmostEqual(b.evaluate(), 1)
-
-    def test_multi_layer_perceptron(self):
-        X = Variable(np.array([[0, 0], [1, 0], [0, 1], [1, 1]]))
-        y = Variable(np.array([0, 1, 1, 0]))
-        W1 = Variable(np.array([[1, 1], [1, 1]]))
-        c = Variable(np.array([0, -1]))
-        w2 = Variable(np.array([1, -2]))
-        p = Relu(X @ W1 + Repeat(c, 4)) @ w2
-        J = Sum((p - y) ** 2)
-
-        dw2 = differentiate(J, w2)
-        dc = differentiate(J, c)
-        dW1 = differentiate(J, W1)
-
-        learning_rate = 0.1
-        for i in range(1000):
-            w2.set_value(w2.evaluate() - learning_rate * dw2.evaluate())
-            c.set_value(c.evaluate() - learning_rate * dc.evaluate())
-            W1.set_value(W1.evaluate() - learning_rate * dW1.evaluate())
-
-        self.assertAlmostEqual(J.evaluate(), 0)
-        np.testing.assert_almost_equal(W1.evaluate(), np.array([[1, 1], [1, 1]]))
-        np.testing.assert_almost_equal(c.evaluate(), np.array([0, -1]))
-        np.testing.assert_almost_equal(w2.evaluate(), np.array([1, -2]))

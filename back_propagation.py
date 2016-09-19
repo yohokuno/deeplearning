@@ -40,8 +40,9 @@ class Unit:
 
 
 class Variable(Unit):
-    def __init__(self, value=None):
+    def __init__(self, value=None, name=None):
         self.value = value
+        self.name = name
         super().__init__()
 
     def evaluate(self):
@@ -123,6 +124,7 @@ class MatrixMultiply(Unit):
         return self.parents[0].evaluate() @ self.parents[1].evaluate()
 
     def get_gradient(self, index):
+        # TODO: support Jacobian for matrix-matrix multiplication
         if index == 0:
             return self.parents[1]
         else:
