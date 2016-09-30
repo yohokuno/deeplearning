@@ -47,3 +47,19 @@ class TestConvolution(TestCase):
         actual = convolution2d(I, K)
         expected = [[4, 6], [10, 12]]
         self.assertSequenceEqual(actual, expected)
+
+    def test_max_pooling1d(self):
+        I = [0, 0.1, 1, 0.2, 0.1, 0]
+        actual = max_pooling1d(I, 2)
+        expected = [0.1, 1, 1, 0.2, 0.1]
+        self.assertSequenceEqual(actual, expected)
+
+        I = [0, 0.1, 1, 0.2, 0.1, 0]
+        actual = max_pooling1d(I, 3)
+        expected = [1, 1, 1, 0.2]
+        self.assertSequenceEqual(actual, expected)
+
+        I = [0.1, 1, 0.2, 0.1, 0, 0.1, 0]
+        actual = max_pooling1d(I, 3, 2)
+        expected = [1, 0.2, 0.1]
+        self.assertSequenceEqual(actual, expected)
