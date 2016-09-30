@@ -26,3 +26,7 @@ def convolution2d(I, K):
 
 def max_pooling1d(I, width, stride=1):
     return [max(I[i + w] for w in range(width)) for i in range(0, len(I) - width + 1, stride)]
+
+
+def max_pooling2d(I, width, stride=1):
+    return [[max(I[i + m][j + n] for m in range(width) for n in range(width)) for j in range(0, len(I[0]) - width + 1, stride)] for i in range(0, len(I) - width + 1, stride)]
