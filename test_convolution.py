@@ -21,18 +21,16 @@ class TestConvolution(TestCase):
     def test_cnn1d(self):
         I = [1, 2, 3]
         K = [1, -1]
+        S_ = [-1, 1]
 
         for i in range(1000):
             S = convolution1d(I, K)
             J = convolution1d_jacobian(I, K)
-            # S - S_ = S because S_ = 0
-            G = multiply(J, S)
+            G = multiply(J, add(S, minus(S_)))
             K = add(K, minus(multiply(0.1, G)))
 
-        self.assertAlmostEqual(S[0], 0, places=2)
-        self.assertAlmostEqual(S[1], 0, places=2)
-        self.assertAlmostEqual(K[0], 0, places=2)
-        self.assertAlmostEqual(K[1], 0, places=2)
+        self.assertAlmostEqual(S[0], S_[0], places=2)
+        self.assertAlmostEqual(S[1], S_[1], places=2)
 
     def test_convolution2d(self):
         I = [[0, 1, 2], [3, 4, 5], [6, 7, 8]]
