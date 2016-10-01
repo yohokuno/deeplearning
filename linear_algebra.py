@@ -5,14 +5,6 @@ def transpose(A):
     return [[A[i][j] for i in range(len(A))] for j in range(len(A[0]))]
 
 
-def add(A, B):
-    assert(len(A) == len(B))
-    assert(all(len(A[i]) == len(B[i]) for i in range(len(A))))
-    row = len(A)
-    column = len(A[0])
-    return [[A[i][j] + B[j][i] for j in range(column)] for i in range(row)]
-
-
 def is_scalar(x):
     return type(x) in [int, float]
 
@@ -26,6 +18,22 @@ def is_matrix(x):
     return type(x) is list and  \
            all(type(x[i]) is list for i in range(len(x))) and \
            all(len(x[i]) == len(x[0]) for i in range(len(x)))
+
+
+def add(A, B):
+    if is_matrix(A) and is_matrix(B):
+        row = len(A)
+        column = len(A[0])
+        return [[A[i][j] + B[j][i] for j in range(column)] for i in range(row)]
+    elif is_vector(A) and is_vector(B):
+        return [A[i] + B[i] for i in range(len(A))]
+
+
+def minus(A):
+    if is_matrix(A):
+        return [[-A[i][j] for j in range(len(A[0]))] for i in range(len(A))]
+    elif is_vector(A):
+        return [-A[i] for i in range(len(A))]
 
 
 def multiply(A, B):
