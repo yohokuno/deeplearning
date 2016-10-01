@@ -12,3 +12,13 @@ def max_pooling1d(I, width, stride=1):
 
 def max_pooling2d(I, width, stride=1):
     return [[max(I[i + m][j + n] for m in range(width) for n in range(width)) for j in range(0, len(I[0]) - width + 1, stride)] for i in range(0, len(I) - width + 1, stride)]
+
+
+def max_pooling1d_fix(I, size):
+    width = int(len(I) / size)
+    return max_pooling1d(I, width, width)
+
+
+def max_pooling2d_fix(I, size):
+    width = int(len(I) / size)
+    return max_pooling2d(I, width, width)
