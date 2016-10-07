@@ -1,8 +1,8 @@
 from unittest import TestCase
-from recurrence import *
+from rnn import *
 
 
-class TestRecurrence(TestCase):
+class TestRNN(TestCase):
     def test_softmax(self):
         actual = softmax(np.array([0, 1]))
         expected = np.array([0.2689414, 0.7310586])
