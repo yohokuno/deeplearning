@@ -33,12 +33,11 @@ def rnn_loss(X, Y_, U, V, W, h_init):
 
 def rnn_gradient(X, Y_, U, V, W, h_init):
     # Forward
-    h = h_init
-    H = []
+    H = [h_init]
     Y = []
 
     for i in range(len(X)):
-        h = np.tanh(W @ h + U @ X[i])
+        h = np.tanh(W @ H[i] + U @ X[i])
         y = softmax(V @ h)
         H.append(h)
         Y.append(y)
@@ -51,9 +50,9 @@ def rnn_gradient(X, Y_, U, V, W, h_init):
 
     for i in range(len(X) - 2, -1, -1):
         do = Y[i] - Y_[i]
-        dh = W.T @ dh @ np.diag(1 - H[i+1] ** 2) + V.T @ do
-        dV += np.outer(do, H[i])
-        dW += np.outer(np.diag(1 - H[i] ** 2) @ dh, H[i-1])
-        dU += np.outer(np.diag(1 - H[i] ** 2) @ dh, X[i])
+        dh = W.T @ dh @ np.diag(1 - H[i+2] ** 2) + V.T @ do
+        dV += np.outer(do, H[i+1])
+        dW += np.outer(np.diag(1 - H[i+1] ** 2) @ dh, H[i])
+        dU += np.outer(np.diag(1 - H[i+1] ** 2) @ dh, X[i])
 
     return dV, dW, dU
