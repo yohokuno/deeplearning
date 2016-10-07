@@ -13,10 +13,21 @@ def one_hot(y, category=None):
     return result
 
 
-def recurrence(X, U, V, W, h_init):
+def rnn_predict(X, U, V, W, h_init):
     h = h_init
 
     for x in X:
         h = np.tanh(W @ h + U @ x)
         y = softmax(V @ h)
         yield y
+
+
+def rnn_loss(X, U, V, W, h_init):
+    h = h_init
+
+    for i in range(len(X)-1):
+        x = X[i]
+        y_ = X[i+1]
+        h = np.tanh(W @ h + U @ x)
+        y = softmax(V @ h)
+        yield np.sum(-y_ * np.log(y))
