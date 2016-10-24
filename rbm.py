@@ -1,4 +1,5 @@
 import numpy as np
+from scipy.special import expit
 
 
 class RBM:
@@ -19,6 +20,9 @@ class RBM:
 
     def joint(self, v, h):
         return np.exp(-self.energy(v, h)) / self.partition()
+
+    def hidden(self, v):
+        return expit(self.c + v @ self.W)
 
     @staticmethod
     def binary(size):

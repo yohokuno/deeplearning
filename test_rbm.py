@@ -38,3 +38,8 @@ class TestRBM(TestCase):
         actual = rbm.joint(v, h)
         expected = 0.30203131427322721
         self.assertAlmostEqual(actual, expected)
+
+        v = np.array([1, 0])
+        actual = rbm.hidden(v)
+        expected = [0.7310585786300049, 0.5]
+        np.testing.assert_almost_equal(actual, expected)
