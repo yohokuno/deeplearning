@@ -22,7 +22,10 @@ class RBM:
         return np.exp(-self.energy(v, h)) / self.partition()
 
     def hidden(self, v):
-        return expit(self.c + v @ self.W)
+        return expit(self.c + self.W.T @ v)
+
+    def visible(self, h):
+        return expit(self.c + self.W.T @ h)
 
     @staticmethod
     def binary(size):
